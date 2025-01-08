@@ -38,4 +38,9 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
         _binding.forksView.text = resources.getString(R.string.forks_count, item.forksCount)
         _binding.openIssuesView.text = resources.getString(R.string.open_issues_count, item.openIssuesCount)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
 }
