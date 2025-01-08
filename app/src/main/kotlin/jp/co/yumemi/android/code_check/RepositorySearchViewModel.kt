@@ -24,7 +24,7 @@ import java.util.Date
 /**
  * TwoFragment で使う
  */
-class OneViewModel(
+class RepositorySearchViewModel(
     val context: Context,
 ) : ViewModel() {
     // 検索結果
