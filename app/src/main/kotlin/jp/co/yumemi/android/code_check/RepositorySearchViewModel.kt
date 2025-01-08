@@ -22,6 +22,13 @@ import java.util.Date
 class RepositorySearchViewModel(
     private val context: Context,
 ) : ViewModel() {
+    private val client = HttpClient(Android)
+
+    override fun onCleared() {
+        super.onCleared()
+        client.close()
+    }
+
     /**
      * GitHub APIを利用して検索結果を取得します。
      *
@@ -29,8 +36,6 @@ class RepositorySearchViewModel(
      * @return RepositoryItemのリスト
      */
     suspend fun fetchSearchResults(inputText: String): List<RepositoryItem> {
-        val client = HttpClient(Android)
-
         return withContext(Dispatchers.IO) {
             // APIリクエストを送信
             val response: HttpResponse =
