@@ -33,9 +33,9 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
         _binding.ownerIconView.load(item.ownerIconUrl)
         _binding.nameView.text = item.name
         _binding.languageView.text = item.language
-        _binding.starsView.text = "${item.stargazersCount} stars"
-        _binding.watchersView.text = "${item.watchersCount} watchers"
-        _binding.forksView.text = "${item.forksCount} forks"
-        _binding.openIssuesView.text = "${item.openIssuesCount} open issues"
+        _binding.starsView.text = resources.getString(R.string.stars_count, item.stargazersCount)
+        _binding.watchersView.text = resources.getString(R.string.watchers_count, item.watchersCount)
+        _binding.forksView.text = resources.getString(R.string.forks_count, item.forksCount)
+        _binding.openIssuesView.text = resources.getString(R.string.open_issues_count, item.openIssuesCount)
     }
 }
