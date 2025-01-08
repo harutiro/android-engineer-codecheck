@@ -1,6 +1,8 @@
 package jp.co.yumemi.android.code_check
 
+import android.app.Application
 import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -19,9 +21,8 @@ import java.util.Date
 /**
  * RepositorySearchFragmentで利用するリポジトリ検索用のViewModel
  */
-class RepositorySearchViewModel(
-    private val context: Context,
-) : ViewModel() {
+class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
+
     private val client = HttpClient(Android)
 
     override fun onCleared() {
@@ -74,7 +75,7 @@ class RepositorySearchViewModel(
             RepositoryItem(
                 name = name,
                 ownerIconUrl = ownerIconUrl,
-                language = context.getString(R.string.written_language, language),
+                language = getApplication<Application>().getString(R.string.written_language, language),
                 stargazersCount = stargazersCount,
                 watchersCount = watchersCount,
                 forksCount = forksCount,

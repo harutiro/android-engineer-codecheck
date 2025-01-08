@@ -7,16 +7,23 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import jp.co.yumemi.android.code_check.databinding.FragmentRepositoryDetailBinding
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBinding
 import kotlinx.coroutines.launch
 
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
-    private lateinit var binding: FragmentRepositorySearchBinding
-    private lateinit var viewModel: RepositorySearchViewModel
+
+    private var binding: FragmentRepositorySearchBinding? = null
+    private val _binding get() = binding!!
+
+    private var viewModel: RepositorySearchViewModel? = null
+    private val _viewModel get() = viewModel!!
+
     private val adapter =
         RepositoryListRecyclerViewAdapter(
             object : RepositoryListRecyclerViewAdapter.OnItemClickListener {
@@ -32,7 +39,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel = RepositorySearchViewModel(requireContext()) // ViewModelの呼び出し方は後日変更する
+        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
 
         setupRecyclerView()
         setupSearchInput()
@@ -45,7 +52,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
         val layoutManager = LinearLayoutManager(requireContext())
         val dividerItemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
 
-        binding.recyclerView.apply {
+        _binding.recyclerView.apply {
             this.layoutManager = layoutManager
             addItemDecoration(dividerItemDecoration)
             adapter = this@RepositorySearchFragment.adapter
@@ -56,7 +63,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
      * 検索入力のセットアップ
      */
     private fun setupSearchInput() {
-        binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
+        _binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
                 val query = editText.text.toString()
                 performSearch(query)
@@ -73,7 +80,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun performSearch(query: String) {
         lifecycleScope.launch {
             try {
-                val results = viewModel.fetchSearchResults(query)
+                val results = _viewModel.fetchSearchResults(query)
                 adapter.submitList(results)
             } catch (e: Exception) {
                 // エラー処理を追加（例: ログの表示やUIへの通知）
