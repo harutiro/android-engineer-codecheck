@@ -1,12 +1,10 @@
-/*
- * Copyright © 2021 YUMEMI Inc. All rights reserved.
- */
 package jp.co.yumemi.android.code_check
 
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,9 +13,12 @@ import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBindi
 import kotlinx.coroutines.launch
 
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
-    private lateinit var binding: FragmentRepositorySearchBinding
+    private var _binding: FragmentRepositorySearchBinding? = null
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
+
     private lateinit var viewModel: RepositorySearchViewModel
-    private val adapter =
+
+    private val adapter by lazy {
         RepositoryListRecyclerViewAdapter(
             object : RepositoryListRecyclerViewAdapter.OnItemClickListener {
                 override fun itemClick(repositoryItem: RepositoryItem) {
@@ -25,17 +26,23 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
                 }
             },
         )
+    }
 
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel = RepositorySearchViewModel(requireContext()) // ViewModelの呼び出し方は後日変更する
+        _binding = FragmentRepositorySearchBinding.bind(view)
+        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
 
         setupRecyclerView()
         setupSearchInput()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -58,8 +65,10 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun setupSearchInput() {
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
-                val query = editText.text.toString()
-                performSearch(query)
+                val query = editText.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    performSearch(query)
+                }
                 true
             } else {
                 false
@@ -76,7 +85,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
                 val results = viewModel.fetchSearchResults(query)
                 adapter.submitList(results)
             } catch (e: Exception) {
-                // エラー処理を追加（例: ログの表示やUIへの通知）
+                // エラー処理を実装 (例: ユーザー通知)
             }
         }
     }

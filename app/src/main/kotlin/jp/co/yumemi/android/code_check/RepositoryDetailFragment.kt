@@ -15,8 +15,8 @@ import jp.co.yumemi.android.code_check.databinding.FragmentRepositoryDetailBindi
 class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
     private val args: RepositoryDetailFragmentArgs by navArgs()
 
-    private var binding: FragmentRepositoryDetailBinding? = null
-    private val _binding get() = binding!!
+    private var _binding: FragmentRepositoryDetailBinding? = null
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
 
     override fun onViewCreated(
         view: View,
@@ -26,21 +26,24 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
 
         Log.d("検索した日時", lastSearchDate.toString())
 
-        binding = FragmentRepositoryDetailBinding.bind(view)
+        _binding = FragmentRepositoryDetailBinding.bind(view)
 
-        var item = args.item
+        val item = args.item
+        bindViews(item)
+    }
 
-        _binding.ownerIconView.load(item.ownerIconUrl)
-        _binding.nameView.text = item.name
-        _binding.languageView.text = item.language
-        _binding.starsView.text = resources.getString(R.string.stars_count, item.stargazersCount)
-        _binding.watchersView.text = resources.getString(R.string.watchers_count, item.watchersCount)
-        _binding.forksView.text = resources.getString(R.string.forks_count, item.forksCount)
-        _binding.openIssuesView.text = resources.getString(R.string.open_issues_count, item.openIssuesCount)
+    private fun bindViews(item: RepositoryItem) {
+        binding.ownerIconView.load(item.ownerIconUrl)
+        binding.nameView.text = item.name
+        binding.languageView.text = item.language
+        binding.starsView.text = resources.getString(R.string.stars_count, item.stargazersCount)
+        binding.watchersView.text = resources.getString(R.string.watchers_count, item.watchersCount)
+        binding.forksView.text = resources.getString(R.string.forks_count, item.forksCount)
+        binding.openIssuesView.text = resources.getString(R.string.open_issues_count, item.openIssuesCount)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 }
