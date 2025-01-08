@@ -34,7 +34,20 @@ private val diffUtilCallback =
 class RepositoryListRecyclerViewAdapter(
     private val itemClickListener: OnItemClickListener,
 ) : ListAdapter<RepositoryItem, RepositoryListRecyclerViewAdapter.ViewHolder>(diffUtilCallback) {
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val repositoryNameView: TextView? = view.findViewById(R.id.repositoryNameView)
+
+        /**
+         * ビューにデータをバインド
+         */
+        fun bind(
+            item: RepositoryItem,
+            clickListener: OnItemClickListener,
+        ) {
+            repositoryNameView?.text = item.name
+            itemView.setOnClickListener { clickListener.itemClick(item) }
+        }
+    }
 
     interface OnItemClickListener {
         fun itemClick(repositoryItem: RepositoryItem)
@@ -55,7 +68,10 @@ class RepositoryListRecyclerViewAdapter(
         position: Int,
     ) {
         val item = getItem(position)
-        holder.itemView.findViewById<TextView>(R.id.repositoryNameView).text = item.name
-        holder.itemView.setOnClickListener { itemClickListener.itemClick(item) }
+        if (item != null) {
+            holder.bind(item, itemClickListener)
+        } else {
+            // アイテムがnullの場合の処理（必要なら追加）
+        }
     }
 }

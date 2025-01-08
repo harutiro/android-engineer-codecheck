@@ -1,9 +1,7 @@
 package jp.co.yumemi.android.code_check
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.request.get
@@ -22,8 +20,7 @@ import java.util.Date
  * RepositorySearchFragmentで利用するリポジトリ検索用のViewModel
  */
 class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val client = HttpClient(Android)
+    private val client by lazy { HttpClient(Android) }
 
     override fun onCleared() {
         super.onCleared()
@@ -61,21 +58,23 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
      * @return RepositoryItemのリスト
      */
     private fun parseRepositoryItems(jsonItems: JSONArray): List<RepositoryItem> {
+        val applicationContext = getApplication<Application>().applicationContext
+
         return (0 until jsonItems.length()).mapNotNull { index ->
             val jsonItem = jsonItems.optJSONObject(index) ?: return@mapNotNull null
 
-            val name = jsonItem.optString("full_name")
+            val name = jsonItem.optString("full_name", "Unknown")
             val ownerIconUrl = jsonItem.optJSONObject("owner")?.optString("avatar_url") ?: ""
-            val language = jsonItem.optString("language")
-            val stargazersCount = jsonItem.optLong("stargazers_count")
-            val watchersCount = jsonItem.optLong("watchers_count")
-            val forksCount = jsonItem.optLong("forks_count")
-            val openIssuesCount = jsonItem.optLong("open_issues_count")
+            val language = jsonItem.optString("language", "Unknown")
+            val stargazersCount = jsonItem.optLong("stargazers_count", 0)
+            val watchersCount = jsonItem.optLong("watchers_count", 0)
+            val forksCount = jsonItem.optLong("forks_count", 0)
+            val openIssuesCount = jsonItem.optLong("open_issues_count", 0)
 
             RepositoryItem(
                 name = name,
                 ownerIconUrl = ownerIconUrl,
-                language = getApplication<Application>().getString(R.string.written_language, language),
+                language = applicationContext.getString(R.string.written_language, language),
                 stargazersCount = stargazersCount,
                 watchersCount = watchersCount,
                 forksCount = forksCount,
