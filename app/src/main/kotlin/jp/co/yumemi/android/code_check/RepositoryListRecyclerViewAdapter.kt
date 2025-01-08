@@ -67,11 +67,6 @@ class RepositoryListRecyclerViewAdapter(
         holder: ViewHolder,
         position: Int,
     ) {
-        val item = getItem(position)
-        if (item != null) {
-            holder.bind(item, itemClickListener)
-        } else {
-            // アイテムがnullの場合の処理（必要なら追加）
-        }
+        holder.bind(getItem(position), itemClickListener)
     }
 }
