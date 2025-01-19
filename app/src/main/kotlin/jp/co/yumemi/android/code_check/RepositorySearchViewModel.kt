@@ -17,15 +17,7 @@ import kotlinx.coroutines.launch
  */
 class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
     private val appContext = application
-    private val networkRepository =
-        NetworkRepository(
-            HttpClient(Android) {
-                engine {
-                    connectTimeout = 10_000
-                    socketTimeout = 10_000
-                }
-            },
-        )
+    private val networkRepository = NetworkRepository()
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
@@ -51,10 +43,5 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                 _errorMessage.postValue(e.message)
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        networkRepository.close()
     }
 }

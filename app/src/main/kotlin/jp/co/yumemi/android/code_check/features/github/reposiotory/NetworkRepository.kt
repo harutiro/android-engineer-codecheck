@@ -6,7 +6,7 @@ import jp.co.yumemi.android.code_check.features.github.api.GitHubRepositoryApi
 import jp.co.yumemi.android.code_check.features.github.api.GitHubRepositoryApiImpl
 import org.json.JSONException
 
-class NetworkRepository(private val client: HttpClient) {
+class NetworkRepository {
     val gitHubRepositoryApi: GitHubRepositoryApi = GitHubRepositoryApiImpl()
 
     suspend fun fetchSearchResults(inputText: String): List<RepositoryItem> {
@@ -29,10 +29,6 @@ class NetworkRepository(private val client: HttpClient) {
         } catch (e: Exception) {
             throw NetworkException("ネットワークエラー", e)
         }
-    }
-
-    fun close() {
-        client.close()
     }
 }
 
