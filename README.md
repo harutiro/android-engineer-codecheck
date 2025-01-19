@@ -13,11 +13,11 @@
 ### 環境
 
 - IDE：Android Studio Ladybug | 2024.2.1 Patch 3
-- Kotlin：1.6.21
+- Kotlin： 2.0.0
 - Java：17
 - Gradle：8.9
 - minSdk：23
-- targetSdk：31
+- targetSdk：35
 
 ※ ライブラリの利用はオープンソースのものに限ります。
 ※ 環境は適宜更新してください。
