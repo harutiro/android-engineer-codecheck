@@ -31,7 +31,7 @@ class GitHubRepositoryApiImpl : GitHubRepositoryApi {
                 .add(KotlinJsonAdapterFactory())
                 .build()
 
-        val weatherService =
+        val githubService =
             Retrofit.Builder()
                 .baseUrl("https://api.github.com")
                 .client(client)
@@ -41,7 +41,7 @@ class GitHubRepositoryApiImpl : GitHubRepositoryApi {
     }
 
     override suspend fun getRepository(searchWord: String): RepositoryList {
-        val response = weatherService.getRepository(searchWord)
+        val response = githubService.getRepository(searchWord)
 
         if (!response.isSuccessful) {
             throw when (response.code()) {
