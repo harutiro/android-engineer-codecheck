@@ -94,9 +94,6 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                 forksCount = forksCount,
                 openIssuesCount = openIssuesCount,
             )
-        }.also {
-            // 最終検索日時を更新
-            lastSearchDate = Date()
         }
     }
 }
