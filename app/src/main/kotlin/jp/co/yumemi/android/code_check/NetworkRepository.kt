@@ -24,9 +24,9 @@ class NetworkRepository(private val client: HttpClient) {
 
             return parseRepositoryItems(jsonItems)
         } catch (e: JSONException) {
-            throw NetworkException("JSON解析エラー")
+            throw NetworkException("JSON解析エラー", e)
         } catch (e: Exception) {
-            throw NetworkException("ネットワークエラー")
+            throw NetworkException("ネットワークエラー", e)
         }
     }
 
@@ -59,4 +59,4 @@ class NetworkRepository(private val client: HttpClient) {
     }
 }
 
-class NetworkException(message: String) : Exception(message)
+class NetworkException(message: String, cause: Throwable? = null) : Exception(message, cause)
