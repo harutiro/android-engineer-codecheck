@@ -1,6 +1,7 @@
 package jp.co.yumemi.android.code_check
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,6 +26,10 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
+
+    companion object {
+        private const val TAG = "RepositorySearchVM"
+    }
 
     private val client =
         HttpClient(Android) {
@@ -62,9 +67,11 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                 // JSON配列をリストに変換
                 parseRepositoryItems(jsonItems)
             } catch (e: JSONException) {
+                Log.e(TAG, "JSON解析エラー", e)
                 _errorMessage.postValue("正しいJsonの形でデータが整形できませんでした。")
                 emptyList()
             } catch (e: Exception) {
+                Log.e(TAG, "ネットワークエラー", e)
                 _errorMessage.postValue("ネットワークに接続できませんでした。再度お試しください。")
                 emptyList()
             }
