@@ -19,47 +19,36 @@ import kotlinx.coroutines.launch
 
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private var _binding: FragmentRepositorySearchBinding? = null
-    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
-
+    private val binding get() = _binding!!
     private lateinit var viewModel: RepositorySearchViewModel
 
     private val adapter by lazy {
         RepositoryListRecyclerViewAdapter(
             object : RepositoryListRecyclerViewAdapter.OnItemClickListener {
                 override fun itemClick(repositoryItem: RepositoryItem) {
-                    navigateToRepositoryFragment(repositoryItem)
+                    onItemClick(repositoryItem)
                 }
-            },
+            }
         )
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel =
-            ViewModelProvider(
-                this,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application),
-            )[RepositorySearchViewModel::class.java]
+        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
 
-        // エラーメッセージを監視
-        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                showErrorDialog(it) // 必要に応じてダイアログやToastを表示
-            }
-        }
-
+        observeViewModel()
         setupRecyclerView()
         setupSearchInput()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.recyclerView.adapter = null
-        _binding = null
+    private fun observeViewModel() {
+        viewModel.searchResults.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            it?.let { DialogHelper.showErrorDialog(requireContext(), it) }
+        }
     }
 
     /**
@@ -76,16 +65,10 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
         }
     }
 
-    /**
-     * 検索入力のセットアップ
-     */
     private fun setupSearchInput() {
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
-                val query = editText.text.toString().trim()
-                if (query.isNotEmpty()) {
-                    performSearch(query)
-                }
+                viewModel.searchRepositories(editText.text.toString().trim())
                 true
             } else {
                 false
@@ -93,37 +76,14 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
         }
     }
 
-    /**
-     * 検索処理の実行
-     */
-    private fun performSearch(query: String) {
-        lifecycleScope.launch {
-            try {
-                val results = viewModel.fetchSearchResults(query)
-                adapter.submitList(results)
-            } catch (e: Exception) {
-                Log.e("RepositorySearchFragment", "Search failed: $e")
-                // ユーザー通知
-                showErrorDialog("検索に失敗しました。")
-            }
-        }
-    }
-
-    private fun showErrorDialog(message: String) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("エラー")
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
-    /**
-     * リポジトリ詳細画面への遷移
-     */
-    private fun navigateToRepositoryFragment(repositoryItem: RepositoryItem) {
-        val action =
-            RepositorySearchFragmentDirections
-                .actionRepositoriesFragmentToRepositoryFragment(item = repositoryItem)
+    private fun onItemClick(item: RepositoryItem) {
+        val action = RepositorySearchFragmentDirections
+            .actionRepositoriesFragmentToRepositoryFragment(item = item)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
