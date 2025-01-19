@@ -17,7 +17,6 @@ sealed class NetworkResult<out T> {
 class NetworkRepository(
     private val gitHubRepositoryApi: GitHubRepositoryApi = GitHubRepositoryApiImpl(),
 ) {
-
     suspend fun fetchSearchResults(
         inputText: String,
         context: Context,

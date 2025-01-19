@@ -2,6 +2,7 @@ package jp.co.yumemi.android.code_check.features.github.api
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import jp.co.yumemi.android.code_check.BuildConfig
 import jp.co.yumemi.android.code_check.features.github.entity.RepositoryList
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,7 +12,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class GitHubRepositoryApiImpl : GitHubRepositoryApi {
     override suspend fun getRepository(searchWord: String): RepositoryList {
         val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
+        logging.level =
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
 
         val client =
             OkHttpClient.Builder()
