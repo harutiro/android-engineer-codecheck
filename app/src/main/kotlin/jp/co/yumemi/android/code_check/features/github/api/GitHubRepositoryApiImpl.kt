@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import jp.co.yumemi.android.code_check.BuildConfig
 import jp.co.yumemi.android.code_check.features.github.entity.RepositoryList
+import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -39,10 +40,14 @@ class GitHubRepositoryApiImpl : GitHubRepositoryApi {
 
         val response = weatherService.getRepository(searchWord)
 
-        return if (response.isSuccessful && response.body() != null) {
-            response.body() ?: RepositoryList(emptyList())
-        } else {
-            throw Exception("検索を行うことができませんでした。再度試してください")
+        if (!response.isSuccessful) {
+            throw when (response.code()) {
+                404 -> NetworkException("リポジトリが見つかりませんでした")
+                403 -> NetworkException("APIレート制限に達しました")
+                500 -> NetworkException("サーバーエラーが発生しました")
+                else -> NetworkException("エラーが発生しました: ${response.code()}")
+            }
         }
+        return response.body() ?: throw NetworkException("レスポンスが空でした")
     }
 }
