@@ -26,12 +26,13 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
 
-    private val client = HttpClient(Android) {
-        engine {
-            connectTimeout = 10_000
-            socketTimeout = 10_000
+    private val client =
+        HttpClient(Android) {
+            engine {
+                connectTimeout = 10_000
+                socketTimeout = 10_000
+            }
         }
-    }
 
     override fun onCleared() {
         super.onCleared()
@@ -48,10 +49,11 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
         return withContext(Dispatchers.IO) {
             // APIリクエストを送信
             try {
-                val response: HttpResponse = client.get("https://api.github.com/search/repositories") {
-                    header("Accept", "application/vnd.github.v3+json")
-                    parameter("q", inputText)
-                }
+                val response: HttpResponse =
+                    client.get("https://api.github.com/search/repositories") {
+                        header("Accept", "application/vnd.github.v3+json")
+                        parameter("q", inputText)
+                    }
 
                 // レスポンスをJSONとしてパース
                 val jsonBody = JSONObject(response.readText())
@@ -75,9 +77,7 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
      * @param jsonItems JSON配列
      * @return RepositoryItemのリスト
      */
-    private fun parseRepositoryItems(
-        jsonItems: JSONArray,
-    ): List<RepositoryItem> {
+    private fun parseRepositoryItems(jsonItems: JSONArray): List<RepositoryItem> {
         return (0 until jsonItems.length()).mapNotNull { index ->
             val jsonItem = jsonItems.optJSONObject(index) ?: return@mapNotNull null
 
