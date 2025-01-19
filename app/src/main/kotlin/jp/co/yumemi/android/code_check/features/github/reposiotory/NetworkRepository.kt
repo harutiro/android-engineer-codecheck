@@ -17,24 +17,28 @@ sealed class NetworkResult<out T> {
 class NetworkRepository(
     private val gitHubRepositoryApi: GitHubRepositoryApi = GitHubRepositoryApiImpl(),
 ) {
-    suspend fun fetchSearchResults(inputText: String, context: Context): NetworkResult<List<RepositoryItem>> {
+    suspend fun fetchSearchResults(
+        inputText: String,
+        context: Context,
+    ): NetworkResult<List<RepositoryItem>> {
         if (!isNetworkAvailable(context)) {
             return NetworkResult.Error(NetworkException("オフライン状態です"))
         }
 
         return try {
             val repositoryList = gitHubRepositoryApi.getRepository(inputText)
-            val items = repositoryList.items.map { item ->
-                RepositoryItem(
-                    name = item.name,
-                    ownerIconUrl = item.owner.avatarUrl,
-                    language = item.language ?: "none",
-                    stargazersCount = item.stargazersCount,
-                    watchersCount = item.watchersCount,
-                    forksCount = item.forksCount,
-                    openIssuesCount = item.openIssuesCount,
-                )
-            }
+            val items =
+                repositoryList.items.map { item ->
+                    RepositoryItem(
+                        name = item.name,
+                        ownerIconUrl = item.owner.avatarUrl,
+                        language = item.language ?: "none",
+                        stargazersCount = item.stargazersCount,
+                        watchersCount = item.watchersCount,
+                        forksCount = item.forksCount,
+                        openIssuesCount = item.openIssuesCount,
+                    )
+                }
             NetworkResult.Success(items)
         } catch (e: JSONException) {
             NetworkResult.Error(NetworkException("JSONパースエラー", e))
