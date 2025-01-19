@@ -11,18 +11,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class GitHubRepositoryApiImpl : GitHubRepositoryApi {
-    override suspend fun getRepository(searchWord: String): RepositoryList {
-        val logging = HttpLoggingInterceptor()
-        logging.level =
-            if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
-
+    companion object {
         val client =
             OkHttpClient.Builder()
-                .addInterceptor(logging)
+                .addInterceptor(
+                    HttpLoggingInterceptor().apply {
+                        level =
+                            if (BuildConfig.DEBUG) {
+                                HttpLoggingInterceptor.Level.BODY
+                            } else {
+                                HttpLoggingInterceptor.Level.NONE
+                            }
+                    },
+                )
                 .build()
 
         val moshi =
@@ -37,7 +38,9 @@ class GitHubRepositoryApiImpl : GitHubRepositoryApi {
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
                 .create(GitHubRepositoryApiBuilderInterface::class.java)
+    }
 
+    override suspend fun getRepository(searchWord: String): RepositoryList {
         val response = weatherService.getRepository(searchWord)
 
         if (!response.isSuccessful) {
