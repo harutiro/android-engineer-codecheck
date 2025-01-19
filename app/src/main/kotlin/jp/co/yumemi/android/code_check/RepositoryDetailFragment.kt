@@ -25,7 +25,10 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
         _binding = FragmentRepositoryDetailBinding.bind(view)
 
         val item = args.item
+        bindViews(item)
+    }
 
+    private fun bindViews(item: RepositoryItem) {
         binding.ownerIconView.load(item.ownerIconUrl)
         binding.nameView.text = item.name
         binding.languageView.text = item.language

@@ -81,13 +81,13 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
         return (0 until jsonItems.length()).mapNotNull { index ->
             val jsonItem = jsonItems.optJSONObject(index) ?: return@mapNotNull null
 
-            val name = jsonItem.optString("full_name")
+            val name = jsonItem.optString("full_name", "Unknown")
             val ownerIconUrl = jsonItem.optJSONObject("owner")?.optString("avatar_url") ?: ""
-            val language = jsonItem.optString("language")
-            val stargazersCount = jsonItem.optLong("stargazers_count")
-            val watchersCount = jsonItem.optLong("watchers_count")
-            val forksCount = jsonItem.optLong("forks_count")
-            val openIssuesCount = jsonItem.optLong("open_issues_count")
+            val language = jsonItem.optString("language", "Unknown")
+            val stargazersCount = jsonItem.optLong("stargazers_count", 0)
+            val watchersCount = jsonItem.optLong("watchers_count", 0)
+            val forksCount = jsonItem.optLong("forks_count", 0)
+            val openIssuesCount = jsonItem.optLong("open_issues_count", 0)
 
             RepositoryItem(
                 name = name,
