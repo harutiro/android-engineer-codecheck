@@ -1,7 +1,10 @@
 package jp.co.yumemi.android.code_check
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.request.get
@@ -9,18 +12,32 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readText
-import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
-import java.util.Date
 
 /**
  * RepositorySearchFragmentで利用するリポジトリ検索用のViewModel
  */
 class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
-    private val client by lazy { HttpClient(Android) }
+    private val appContext = application
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> get() = _errorMessage
+
+    companion object {
+        private const val TAG = "RepositorySearchVM"
+    }
+
+    private val client =
+        HttpClient(Android) {
+            engine {
+                connectTimeout = 10_000
+                socketTimeout = 10_000
+            }
+        }
 
     override fun onCleared() {
         super.onCleared()
@@ -36,18 +53,28 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
     suspend fun fetchSearchResults(inputText: String): List<RepositoryItem> {
         return withContext(Dispatchers.IO) {
             // APIリクエストを送信
-            val response: HttpResponse =
-                client.get("https://api.github.com/search/repositories") {
-                    header("Accept", "application/vnd.github.v3+json")
-                    parameter("q", inputText)
-                }
+            try {
+                val response: HttpResponse =
+                    client.get("https://api.github.com/search/repositories") {
+                        header("Accept", "application/vnd.github.v3+json")
+                        parameter("q", inputText)
+                    }
 
-            // レスポンスをJSONとしてパース
-            val jsonBody = JSONObject(response.readText())
-            val jsonItems = jsonBody.optJSONArray("items") ?: return@withContext emptyList()
+                // レスポンスをJSONとしてパース
+                val jsonBody = JSONObject(response.readText())
+                val jsonItems = jsonBody.optJSONArray("items") ?: return@withContext emptyList()
 
-            // JSON配列をリストに変換
-            parseRepositoryItems(jsonItems)
+                // JSON配列をリストに変換
+                parseRepositoryItems(jsonItems)
+            } catch (e: JSONException) {
+                Log.e(TAG, "JSON解析エラー", e)
+                _errorMessage.postValue("正しいJsonの形でデータが整形できませんでした。")
+                emptyList()
+            } catch (e: Exception) {
+                Log.e(TAG, "ネットワークエラー", e)
+                _errorMessage.postValue("ネットワークに接続できませんでした。再度お試しください。")
+                emptyList()
+            }
         }
     }
 
@@ -58,8 +85,6 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
      * @return RepositoryItemのリスト
      */
     private fun parseRepositoryItems(jsonItems: JSONArray): List<RepositoryItem> {
-        val applicationContext = getApplication<Application>().applicationContext
-
         return (0 until jsonItems.length()).mapNotNull { index ->
             val jsonItem = jsonItems.optJSONObject(index) ?: return@mapNotNull null
 
@@ -74,15 +99,12 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
             RepositoryItem(
                 name = name,
                 ownerIconUrl = ownerIconUrl,
-                language = applicationContext.getString(R.string.written_language, language),
+                language = if (language.isNullOrEmpty()) "Unknown" else appContext.getString(R.string.written_language, language),
                 stargazersCount = stargazersCount,
                 watchersCount = watchersCount,
                 forksCount = forksCount,
                 openIssuesCount = openIssuesCount,
             )
-        }.also {
-            // 最終検索日時を更新
-            lastSearchDate = Date()
         }
     }
 }

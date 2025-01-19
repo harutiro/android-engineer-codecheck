@@ -4,12 +4,10 @@
 package jp.co.yumemi.android.code_check
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import coil.load
-import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositoryDetailBinding
 
 class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
@@ -23,8 +21,6 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.d("検索した日時", lastSearchDate.toString())
 
         _binding = FragmentRepositoryDetailBinding.bind(view)
 

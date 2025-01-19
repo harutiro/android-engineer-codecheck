@@ -4,10 +4,5 @@
 package jp.co.yumemi.android.code_check
 
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Date
 
-class TopActivity : AppCompatActivity(R.layout.activity_top) {
-    companion object {
-        lateinit var lastSearchDate: Date
-    }
-}
+class TopActivity : AppCompatActivity(R.layout.activity_top)

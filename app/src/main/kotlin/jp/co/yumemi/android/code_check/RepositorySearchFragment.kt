@@ -1,6 +1,11 @@
+/*
+ * Copyright © 2021 YUMEMI Inc. All rights reserved.
+ */
 package jp.co.yumemi.android.code_check
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
@@ -34,7 +39,18 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
+        viewModel =
+            ViewModelProvider(
+                this,
+                ViewModelProvider.AndroidViewModelFactory(requireActivity().application),
+            )[RepositorySearchViewModel::class.java]
+
+        // エラーメッセージを監視
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                showErrorDialog(it) // 必要に応じてダイアログやToastを表示
+            }
+        }
 
         setupRecyclerView()
         setupSearchInput()
@@ -42,6 +58,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.recyclerView.adapter = null
         _binding = null
     }
 
@@ -85,9 +102,19 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
                 val results = viewModel.fetchSearchResults(query)
                 adapter.submitList(results)
             } catch (e: Exception) {
-                // エラー処理を実装 (例: ユーザー通知)
+                Log.e("RepositorySearchFragment", "Search failed: $e")
+                // ユーザー通知
+                showErrorDialog("検索に失敗しました。")
             }
         }
+    }
+
+    private fun showErrorDialog(message: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("エラー")
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     /**
