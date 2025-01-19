@@ -3,6 +3,7 @@
  */
 package jp.co.yumemi.android.code_check
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -43,9 +44,15 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
             ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
         )[RepositorySearchViewModel::class.java]
 
+        // エラーメッセージを監視
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                showErrorDialog(it) // 必要に応じてダイアログやToastを表示
+            }
+        }
+
         setupRecyclerView()
         setupSearchInput()
-        hideErrorText()
     }
 
     override fun onDestroyView() {
@@ -91,27 +98,22 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun performSearch(query: String) {
         lifecycleScope.launch {
             try {
-                hideErrorText()
                 val results = viewModel.fetchSearchResults(query)
                 adapter.submitList(results)
             } catch (e: Exception) {
                 Log.e("RepositorySearchFragment", "Search failed: $e")
                 // ユーザー通知
-                viewErrorText("検索を行えませんでした。")
+                showErrorDialog("検索に失敗しました。")
             }
         }
     }
 
-    private fun viewErrorText(
-        message: String
-    ) {
-        binding.errorTextView.isEnabled = true
-        binding.errorTextView.text = message
-    }
-
-    private fun hideErrorText() {
-        binding.errorTextView.isEnabled = false
-        binding.errorTextView.text = ""
+    private fun showErrorDialog(message: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("エラー")
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     /**
