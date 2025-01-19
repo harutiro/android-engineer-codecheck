@@ -4,7 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 
 object DialogHelper {
-    fun showErrorDialog(context: Context, message: String) {
+    fun showErrorDialog(
+        context: Context,
+        message: String,
+    ) {
         AlertDialog.Builder(context)
             .setTitle("エラー")
             .setMessage(message)

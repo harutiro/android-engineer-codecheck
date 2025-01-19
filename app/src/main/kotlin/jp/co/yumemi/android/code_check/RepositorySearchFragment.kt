@@ -3,19 +3,15 @@
  */
 package jp.co.yumemi.android.code_check
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBinding
-import kotlinx.coroutines.launch
 
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private var _binding: FragmentRepositorySearchBinding? = null
@@ -28,11 +24,14 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
                 override fun itemClick(repositoryItem: RepositoryItem) {
                     onItemClick(repositoryItem)
                 }
-            }
+            },
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRepositorySearchBinding.bind(view)
         viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
@@ -77,8 +76,9 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     }
 
     private fun onItemClick(item: RepositoryItem) {
-        val action = RepositorySearchFragmentDirections
-            .actionRepositoriesFragmentToRepositoryFragment(item = item)
+        val action =
+            RepositorySearchFragmentDirections
+                .actionRepositoriesFragmentToRepositoryFragment(item = item)
         findNavController().navigate(action)
     }
 
