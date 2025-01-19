@@ -50,9 +50,6 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
         }
     }
 
-    /**
-     * RecyclerViewの初期化
-     */
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(requireContext())
         val dividerItemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
@@ -75,6 +72,10 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
         }
     }
 
+    /**
+     * リポジトリ検索結果のクリックイベント
+     * リサイクラービューでアイテムが押された時に動作を行います。
+     */
     private fun onItemClick(item: RepositoryItem) {
         val action =
             RepositorySearchFragmentDirections
