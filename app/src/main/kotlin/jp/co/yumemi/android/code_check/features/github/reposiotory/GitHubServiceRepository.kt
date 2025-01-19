@@ -1,30 +1,17 @@
 package jp.co.yumemi.android.code_check.features.github.reposiotory
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApi
 import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApiImpl
+import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 import org.json.JSONException
 
-sealed class NetworkResult<out T> {
-    data class Success<T>(val data: T) : NetworkResult<T>()
-
-    data class Error(val exception: NetworkException) : NetworkResult<Nothing>()
-}
-
-class NetworkRepository(
+class GitHubServiceRepository(
     private val gitHubRepositoryApi: GitHubServiceApi = GitHubServiceApiImpl(),
 ) {
     suspend fun fetchSearchResults(
         inputText: String,
-        context: Context,
     ): NetworkResult<List<RepositoryItem>> {
-        if (!isNetworkAvailable(context)) {
-            return NetworkResult.Error(NetworkException("オフライン状態です"))
-        }
-
         return try {
             val repositoryList = gitHubRepositoryApi.getRepository(inputText)
             val items =
@@ -45,14 +32,6 @@ class NetworkRepository(
         } catch (e: Exception) {
             NetworkResult.Error(NetworkException("ネットワークエラー", e))
         }
-    }
-
-    private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 }
 

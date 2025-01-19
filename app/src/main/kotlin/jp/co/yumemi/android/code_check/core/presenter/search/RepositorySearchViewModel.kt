@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
-import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkRepository
-import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkResult
+import jp.co.yumemi.android.code_check.features.github.usecase.GitHubServiceUsecase
+import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 import kotlinx.coroutines.launch
 
 /**
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  */
 class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
     private val appContext = application
-    private val networkRepository = NetworkRepository()
+    private val networkRepository = GitHubServiceUsecase()
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
