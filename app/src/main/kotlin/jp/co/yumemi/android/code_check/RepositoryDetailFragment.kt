@@ -14,7 +14,7 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
     private val args: RepositoryDetailFragmentArgs by navArgs()
 
     private var _binding: FragmentRepositoryDetailBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
 
     override fun onViewCreated(
         view: View,
