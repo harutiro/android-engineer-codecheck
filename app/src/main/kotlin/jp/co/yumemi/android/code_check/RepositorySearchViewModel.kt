@@ -31,6 +31,10 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
     private val _searchResults = MutableLiveData<List<RepositoryItem>>()
     val searchResults: LiveData<List<RepositoryItem>> get() = _searchResults
 
+    /**
+     * GitHubのレポジトリ検索を行う
+     * @param query 検索キーワード
+     */
     fun searchRepositories(query: String) {
         if (query.isBlank()) {
             _errorMessage.postValue("検索キーワードを入力してください。")
