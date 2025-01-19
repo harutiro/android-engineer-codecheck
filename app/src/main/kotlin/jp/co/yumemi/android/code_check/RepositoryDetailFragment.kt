@@ -4,7 +4,6 @@
 package jp.co.yumemi.android.code_check
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
@@ -25,7 +24,7 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
 
         _binding = FragmentRepositoryDetailBinding.bind(view)
 
-        var item = args.item
+        val item = args.item
 
         binding.ownerIconView.load(item.ownerIconUrl)
         binding.nameView.text = item.name
