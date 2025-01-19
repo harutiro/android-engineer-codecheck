@@ -38,7 +38,10 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
+        )[RepositorySearchViewModel::class.java]
 
         setupRecyclerView()
         setupSearchInput()

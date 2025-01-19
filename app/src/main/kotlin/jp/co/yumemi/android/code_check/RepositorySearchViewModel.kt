@@ -1,8 +1,8 @@
 package jp.co.yumemi.android.code_check
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.request.get
@@ -10,20 +10,18 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readText
-import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.Date
 
 /**
  * RepositorySearchFragmentで利用するリポジトリ検索用のViewModel
  */
-class RepositorySearchViewModel(
-    private val context: Context,
-) : ViewModel() {
+class RepositorySearchViewModel(application: Application) : AndroidViewModel(application) {
+    private val appContext = application
+
     private val client = HttpClient(Android) {
         engine {
             connectTimeout = 10_000
@@ -73,7 +71,9 @@ class RepositorySearchViewModel(
      * @param jsonItems JSON配列
      * @return RepositoryItemのリスト
      */
-    private fun parseRepositoryItems(jsonItems: JSONArray): List<RepositoryItem> {
+    private fun parseRepositoryItems(
+        jsonItems: JSONArray,
+    ): List<RepositoryItem> {
         return (0 until jsonItems.length()).mapNotNull { index ->
             val jsonItem = jsonItems.optJSONObject(index) ?: return@mapNotNull null
 
@@ -88,7 +88,7 @@ class RepositorySearchViewModel(
             RepositoryItem(
                 name = name,
                 ownerIconUrl = ownerIconUrl,
-                language = context.getString(R.string.written_language, language),
+                language = if (language.isNullOrEmpty()) "Unknown" else appContext.getString(R.string.written_language, language),
                 stargazersCount = stargazersCount,
                 watchersCount = watchersCount,
                 forksCount = forksCount,
