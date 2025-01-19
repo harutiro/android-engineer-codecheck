@@ -114,11 +114,16 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
     }
 
     fun searchRepositories(query: String) {
+        if (query.isBlank()) {
+            _errorMessage.postValue("検索キーワードを入力してください。")
+            return
+        }
         viewModelScope.launch {
             try {
                 val results = fetchSearchResults(query)
                 _searchResults.postValue(results)
             } catch (e: Exception) {
+                Log.e(TAG, "検索処理でエラーが発生しました", e)
                 _errorMessage.postValue("検索に失敗しました。")
             }
         }
