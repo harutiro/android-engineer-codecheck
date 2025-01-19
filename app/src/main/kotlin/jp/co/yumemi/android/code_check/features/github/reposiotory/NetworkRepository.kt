@@ -14,8 +14,9 @@ sealed class NetworkResult<out T> {
     data class Error(val exception: NetworkException) : NetworkResult<Nothing>()
 }
 
-class NetworkRepository {
-    val gitHubRepositoryApi: GitHubRepositoryApi = GitHubRepositoryApiImpl()
+class NetworkRepository(
+    private val gitHubRepositoryApi: GitHubRepositoryApi = GitHubRepositoryApiImpl(),
+) {
 
     suspend fun fetchSearchResults(
         inputText: String,
