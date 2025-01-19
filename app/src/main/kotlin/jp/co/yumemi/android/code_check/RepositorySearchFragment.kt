@@ -21,7 +21,8 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
 
     private lateinit var viewModel: RepositorySearchViewModel
-    private val adapter =
+
+    private val adapter by lazy {
         RepositoryListRecyclerViewAdapter(
             object : RepositoryListRecyclerViewAdapter.OnItemClickListener {
                 override fun itemClick(repositoryItem: RepositoryItem) {
@@ -29,6 +30,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
                 }
             },
         )
+    }
 
     override fun onViewCreated(
         view: View,
@@ -40,6 +42,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
 
         setupRecyclerView()
         setupSearchInput()
+        hideErrorText()
     }
 
     override fun onDestroyView() {
@@ -68,8 +71,10 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun setupSearchInput() {
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
-                val query = editText.text.toString()
-                performSearch(query)
+                val query = editText.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    performSearch(query)
+                }
                 true
             } else {
                 false
@@ -83,10 +88,13 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun performSearch(query: String) {
         lifecycleScope.launch {
             try {
+                hideErrorText()
                 val results = viewModel.fetchSearchResults(query)
                 adapter.submitList(results)
             } catch (e: Exception) {
-                // エラー処理を追加（例: ログの表示やUIへの通知）
+                Log.e("RepositorySearchFragment", "Search failed: $e")
+                // ユーザー通知
+                viewErrorText("検索を行えませんでした。")
             }
         }
     }
