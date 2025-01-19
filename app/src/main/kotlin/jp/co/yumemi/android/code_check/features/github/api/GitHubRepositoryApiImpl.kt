@@ -36,8 +36,7 @@ class GitHubRepositoryApiImpl : GitHubRepositoryApi {
         return if (response.isSuccessful && response.body() != null) {
             response.body() ?: RepositoryList(emptyList())
         } else {
-            // TODO: エラーを返す
-            RepositoryList(emptyList())
+            throw Exception("検索を行うことができませんでした。再度試してください")
         }
     }
 }
