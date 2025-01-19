@@ -3,7 +3,7 @@ package jp.co.yumemi.android.code_check.features.github.reposiotory
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import jp.co.yumemi.android.code_check.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.features.github.api.GitHubRepositoryApi
 import jp.co.yumemi.android.code_check.features.github.api.GitHubRepositoryApiImpl
 import org.json.JSONException

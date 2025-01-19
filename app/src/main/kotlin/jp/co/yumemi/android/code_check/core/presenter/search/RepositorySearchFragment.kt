@@ -1,7 +1,4 @@
-/*
- * Copyright © 2021 YUMEMI Inc. All rights reserved.
- */
-package jp.co.yumemi.android.code_check
+package jp.co.yumemi.android.code_check.core.presenter.search
 
 import android.os.Bundle
 import android.view.View
@@ -11,6 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import jp.co.yumemi.android.code_check.R
+import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBinding
 
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
@@ -52,7 +52,8 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
 
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(requireContext())
-        val dividerItemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
+        val dividerItemDecoration =
+            DividerItemDecoration(requireContext(), layoutManager.orientation)
 
         binding.recyclerView.apply {
             this.layoutManager = layoutManager

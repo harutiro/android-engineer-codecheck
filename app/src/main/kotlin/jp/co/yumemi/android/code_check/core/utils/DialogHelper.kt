@@ -1,4 +1,4 @@
-package jp.co.yumemi.android.code_check
+package jp.co.yumemi.android.code_check.core.utils
 
 import android.app.AlertDialog
 import android.content.Context
