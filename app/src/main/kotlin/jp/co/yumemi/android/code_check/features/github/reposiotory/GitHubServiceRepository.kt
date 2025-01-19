@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
-import jp.co.yumemi.android.code_check.features.github.api.GitHubRepositoryApi
-import jp.co.yumemi.android.code_check.features.github.api.GitHubRepositoryApiImpl
+import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApi
+import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApiImpl
 import org.json.JSONException
 
 sealed class NetworkResult<out T> {
@@ -15,7 +15,7 @@ sealed class NetworkResult<out T> {
 }
 
 class NetworkRepository(
-    private val gitHubRepositoryApi: GitHubRepositoryApi = GitHubRepositoryApiImpl(),
+    private val gitHubRepositoryApi: GitHubServiceApi = GitHubServiceApiImpl(),
 ) {
     suspend fun fetchSearchResults(
         inputText: String,
