@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.request.get
@@ -13,6 +14,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readText
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONException
@@ -26,6 +28,9 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
+
+    private val _searchResults = MutableLiveData<List<RepositoryItem>>()
+    val searchResults: LiveData<List<RepositoryItem>> get() = _searchResults
 
     companion object {
         private const val TAG = "RepositorySearchVM"
@@ -105,6 +110,22 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                 forksCount = forksCount,
                 openIssuesCount = openIssuesCount,
             )
+        }
+    }
+
+    fun searchRepositories(query: String) {
+        if (query.isBlank()) {
+            _errorMessage.postValue("検索キーワードを入力してください。")
+            return
+        }
+        viewModelScope.launch {
+            try {
+                val results = fetchSearchResults(query)
+                _searchResults.postValue(results)
+            } catch (e: Exception) {
+                Log.e(TAG, "検索処理でエラーが発生しました", e)
+                _errorMessage.postValue("検索に失敗しました。")
+            }
         }
     }
 }
