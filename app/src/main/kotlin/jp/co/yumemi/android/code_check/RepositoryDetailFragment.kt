@@ -31,7 +31,7 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
     private fun bindViews(item: RepositoryItem) {
         binding.ownerIconView.load(item.ownerIconUrl)
         binding.nameView.text = item.name
-        binding.languageView.text = item.language
+        binding.languageView.text = resources.getString(R.string.written_language, item.language)
         binding.starsView.text = resources.getString(R.string.stars_count, item.stargazersCount)
         binding.watchersView.text = resources.getString(R.string.watchers_count, item.watchersCount)
         binding.forksView.text = resources.getString(R.string.forks_count, item.forksCount)
