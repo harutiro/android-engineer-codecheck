@@ -15,7 +15,7 @@ import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBindi
 
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private var _binding: FragmentRepositorySearchBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
     private lateinit var viewModel: RepositorySearchViewModel
 
     private val adapter by lazy {
