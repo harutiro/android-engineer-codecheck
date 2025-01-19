@@ -1,6 +1,7 @@
 package jp.co.yumemi.android.code_check
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -13,6 +14,7 @@ import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.Date
 
@@ -22,7 +24,12 @@ import java.util.Date
 class RepositorySearchViewModel(
     private val context: Context,
 ) : ViewModel() {
-    private val client = HttpClient(Android)
+    private val client = HttpClient(Android) {
+        engine {
+            connectTimeout = 10_000
+            socketTimeout = 10_000
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -38,18 +45,25 @@ class RepositorySearchViewModel(
     suspend fun fetchSearchResults(inputText: String): List<RepositoryItem> {
         return withContext(Dispatchers.IO) {
             // APIリクエストを送信
-            val response: HttpResponse =
-                client.get("https://api.github.com/search/repositories") {
+            try {
+                val response: HttpResponse = client.get("https://api.github.com/search/repositories") {
                     header("Accept", "application/vnd.github.v3+json")
                     parameter("q", inputText)
                 }
 
-            // レスポンスをJSONとしてパース
-            val jsonBody = JSONObject(response.readText())
-            val jsonItems = jsonBody.optJSONArray("items") ?: return@withContext emptyList()
+                // レスポンスをJSONとしてパース
+                val jsonBody = JSONObject(response.readText())
+                val jsonItems = jsonBody.optJSONArray("items") ?: return@withContext emptyList()
 
-            // JSON配列をリストに変換
-            parseRepositoryItems(jsonItems)
+                // JSON配列をリストに変換
+                parseRepositoryItems(jsonItems)
+            } catch (e: JSONException) {
+                Log.e("RepositorySearchViewModel", "JSON parsing error: $e")
+                emptyList()
+            } catch (e: Exception) {
+                Log.e("RepositorySearchViewModel", "Network request failed: $e")
+                emptyList()
+            }
         }
     }
 
