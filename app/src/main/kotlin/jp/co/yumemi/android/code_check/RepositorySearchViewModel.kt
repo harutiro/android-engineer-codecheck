@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkRepository
+import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkResult
 import kotlinx.coroutines.launch
 
 /**
@@ -34,8 +35,14 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
         }
         viewModelScope.launch {
             try {
-                val results = networkRepository.fetchSearchResults(query)
-                _searchResults.postValue(results)
+                val results = networkRepository.fetchSearchResults(query, appContext)
+                if (results is NetworkResult.Error) {
+                    _errorMessage.postValue(results.exception.message)
+                    return@launch
+                }
+                if (results is NetworkResult.Success) {
+                    _searchResults.postValue(results.data)
+                }
             } catch (e: NetworkException) {
                 Log.e("NetworkException", e.message, e)
                 _errorMessage.postValue(e.message)
