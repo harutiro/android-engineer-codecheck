@@ -1,13 +1,15 @@
 package jp.co.yumemi.android.code_check
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
-import io.ktor.client.request.get
+import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
+import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkRepository
 import kotlinx.coroutines.launch
 
 /**
@@ -45,6 +47,7 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
                 val results = networkRepository.fetchSearchResults(query)
                 _searchResults.postValue(results)
             } catch (e: NetworkException) {
+                Log.e("NetworkException", e.message, e)
                 _errorMessage.postValue(e.message)
             }
         }
