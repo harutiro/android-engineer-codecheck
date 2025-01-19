@@ -53,6 +53,10 @@ class NetworkRepository(private val client: HttpClient) {
             )
         }
     }
+
+    fun close() {
+        client.close()
+    }
 }
 
 class NetworkException(message: String) : Exception(message)

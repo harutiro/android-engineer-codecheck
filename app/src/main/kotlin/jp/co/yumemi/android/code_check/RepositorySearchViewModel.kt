@@ -49,4 +49,9 @@ class RepositorySearchViewModel(application: Application) : AndroidViewModel(app
             }
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        networkRepository.close()
+    }
 }
