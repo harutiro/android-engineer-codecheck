@@ -24,21 +24,21 @@ RepositoryDetailViewModel@Inject
         private val _errorMessage = MutableLiveData<Int?>()
         val errorMessage: LiveData<Int?> get() = _errorMessage
 
-        private val _searchResults = MutableLiveData<List<RepositoryEntity>>()
-        val searchResults: LiveData<List<RepositoryEntity>> get() = _searchResults
+        private val _searchResults = MutableLiveData<RepositoryEntity>()
+        val searchResults: LiveData<RepositoryEntity> get() = _searchResults
 
         /**
          * GitHubのレポジトリ検索を行う
-         * @param query 検索キーワード
+         * @param id 検索キーワード
          */
-        fun searchRepositories(query: String) {
-            if (query.isBlank()) {
-                _errorMessage.postValue(R.string.form_is_empty)
+        fun searchRepositories(id: Int) {
+            if (id == 0) {
+                _errorMessage.postValue(R.string.api_error)
                 return
             }
             viewModelScope.launch {
                 try {
-                    val results = networkRepository.fetchSearchResults(query)
+                    val results = networkRepository.fetchRepositoryDetail(id)
                     if (results is NetworkResult.Error) {
                         handleError(results.exception)
                         return@launch

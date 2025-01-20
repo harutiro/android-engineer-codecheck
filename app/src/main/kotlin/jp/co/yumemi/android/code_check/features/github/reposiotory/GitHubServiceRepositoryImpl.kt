@@ -45,6 +45,36 @@ class GitHubServiceRepositoryImpl
                 NetworkResult.Error(GitHubError.NetworkError(e))
             }
         }
+
+        override suspend fun fetchRepositoryDetail(id: Int): NetworkResult<RepositoryEntity> {
+            return try {
+                val repositoryDetail = gitHubRepositoryApi.getRepositoryDetail(id)
+                val repositoryEntity =
+                    RepositoryEntity(
+                        name = repositoryDetail.name,
+                        ownerIconUrl = repositoryDetail.owner.avatarUrl,
+                        language = repositoryDetail.language ?: "none",
+                        stargazersCount = repositoryDetail.stargazersCount,
+                        watchersCount = repositoryDetail.watchersCount,
+                        forksCount = repositoryDetail.forksCount,
+                        openIssuesCount = repositoryDetail.openIssuesCount,
+                        id = repositoryDetail.id,
+                    )
+                NetworkResult.Success(repositoryEntity)
+            } catch (e: HttpException) {
+                val error =
+                    when (e.code()) {
+                        429 -> GitHubError.RateLimitError
+                        401 -> GitHubError.AuthenticationError
+                        else -> GitHubError.ApiError(e.code(), e.message())
+                    }
+                NetworkResult.Error(error)
+            } catch (e: JSONException) {
+                NetworkResult.Error(GitHubError.ParseError(e))
+            } catch (e: IOException) {
+                NetworkResult.Error(GitHubError.NetworkError(e))
+            }
+        }
     }
 
 class NetworkException(message: String, cause: Throwable? = null) : Exception(message, cause)

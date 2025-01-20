@@ -19,4 +19,11 @@ class GitHubServiceUsecaseImpl
             }
             return repository.fetchSearchResults(inputText)
         }
+
+        override suspend fun fetchRepositoryDetail(id: Int): NetworkResult<RepositoryEntity> {
+            if (!networkConnectivityService.isNetworkAvailable()) {
+                throw NetworkException("オフライン状態です")
+            }
+            return repository.fetchRepositoryDetail(id)
+        }
     }
