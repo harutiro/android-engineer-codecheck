@@ -39,6 +39,19 @@
 ./gradlew ktlintCheck 
 ```
 
+### Unitテストについて
+
+- Hilt, JUnit, Mockitoを持ちいてUnitテストを作成しました。
+
+```bash
+# 全件実行をする方法
+./gradlew test
+
+# 単体で動かす方法
+./gradlew :app:testDebugUnitTest --tests "jp.co.yumemi.android.code_check.features.github.GitHubServiceRepositoryImplTest"
+```
+
+
 ### 動作
 
 1. 何かしらのキーワードを入力
