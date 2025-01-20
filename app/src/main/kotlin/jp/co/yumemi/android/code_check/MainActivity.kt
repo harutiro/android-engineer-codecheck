@@ -7,4 +7,4 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TopActivity : AppCompatActivity(R.layout.activity_top)
+class MainActivity : AppCompatActivity(R.layout.activity_top)
