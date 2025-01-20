@@ -40,8 +40,8 @@ class GitHubServiceApiImpl : GitHubServiceApi {
                 .create(GitHubServiceApiBuilderInterface::class.java)
     }
 
-    override suspend fun getRepository(searchWord: String): RepositoryList {
-        val response = githubService.getRepository(searchWord)
+    override suspend fun getRepositoryList(searchWord: String): RepositoryList {
+        val response = githubService.getRepositoryList(searchWord)
 
         if (!response.isSuccessful) {
             throw when (response.code()) {

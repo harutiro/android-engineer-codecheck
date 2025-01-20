@@ -16,7 +16,7 @@ class GitHubServiceRepositoryImpl
     ) : GitHubServiceRepository {
         override suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryEntity>> {
             return try {
-                val repositoryList = gitHubRepositoryApi.getRepository(inputText)
+                val repositoryList = gitHubRepositoryApi.getRepositoryList(inputText)
                 val items =
                     repositoryList.items.map { item ->
                         RepositoryEntity(
