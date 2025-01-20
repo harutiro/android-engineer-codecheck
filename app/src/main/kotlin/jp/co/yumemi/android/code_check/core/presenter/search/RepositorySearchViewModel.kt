@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
-import jp.co.yumemi.android.code_check.features.github.usecase.GitHubServiceUsecaseImpl
+import jp.co.yumemi.android.code_check.features.github.usecase.GitHubServiceUsecase
 import jp.co.yumemi.android.code_check.features.github.utils.GitHubError
 import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 import kotlinx.coroutines.launch
@@ -23,10 +23,10 @@ import javax.inject.Inject
 class RepositorySearchViewModel
     @Inject
     constructor(
-        private val networkRepository: GitHubServiceUsecaseImpl,
+        private val networkRepository: GitHubServiceUsecase,
     ) : ViewModel() {
-        private val _errorMessage = MutableLiveData<String?>()
-        val errorMessage: LiveData<String?> get() = _errorMessage
+        private val _errorMessage = MutableLiveData<Int?>()
+        val errorMessage: LiveData<Int?> get() = _errorMessage
 
         private val _searchResults = MutableLiveData<List<RepositoryItem>>()
         val searchResults: LiveData<List<RepositoryItem>> get() = _searchResults
@@ -41,14 +41,14 @@ class RepositorySearchViewModel
             context: Context,
         ) {
             if (query.isBlank()) {
-                _errorMessage.postValue("検索キーワードを入力してください。")
+                _errorMessage.postValue(R.string.form_is_empty)
                 return
             }
             viewModelScope.launch {
                 try {
                     val results = networkRepository.fetchSearchResults(query)
                     if (results is NetworkResult.Error) {
-                        handleError(results.exception, context)
+                        handleError(results.exception)
                         return@launch
                     }
                     if (results is NetworkResult.Success) {
@@ -56,7 +56,7 @@ class RepositorySearchViewModel
                     }
                 } catch (e: NetworkException) {
                     Log.e("NetworkException", e.message, e)
-                    handleError(GitHubError.NetworkError(e), context)
+                    handleError(GitHubError.NetworkError(e))
                 }
             }
         }
@@ -66,11 +66,8 @@ class RepositorySearchViewModel
          * @param GitHubError エラー情報
          * @param context コンテキスト
          */
-        private fun handleError(
-            error: GitHubError,
-            context: Context,
-        ) {
-            val messageRes =
+        private fun handleError(error: GitHubError) {
+            _errorMessage.value =
                 when (error) {
                     is GitHubError.NetworkError -> R.string.network_error
                     is GitHubError.ApiError -> R.string.api_error
@@ -78,6 +75,5 @@ class RepositorySearchViewModel
                     is GitHubError.RateLimitError -> R.string.rate_limit_error
                     is GitHubError.AuthenticationError -> R.string.auth_error
                 }
-            _errorMessage.value = context.getString(messageRes)
         }
     }

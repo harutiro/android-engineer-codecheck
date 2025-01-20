@@ -48,7 +48,12 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
             adapter.submitList(it)
         }
         viewModel.errorMessage.observe(viewLifecycleOwner) {
-            it?.let { DialogHelper.showErrorDialog(requireContext(), it) }
+            it?.let {
+                DialogHelper.showErrorDialog(
+                    requireContext(),
+                    requireContext().getString(it)
+                )
+            }
         }
     }
 
