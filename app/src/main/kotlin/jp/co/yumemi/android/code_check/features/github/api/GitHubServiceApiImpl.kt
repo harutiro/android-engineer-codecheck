@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-class GitHubRepositoryApiImpl : GitHubRepositoryApi {
+class GitHubServiceApiImpl : GitHubServiceApi {
     companion object {
         val client =
             OkHttpClient.Builder()
@@ -37,7 +37,7 @@ class GitHubRepositoryApiImpl : GitHubRepositoryApi {
                 .client(client)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
-                .create(GitHubRepositoryApiBuilderInterface::class.java)
+                .create(GitHubServiceApiBuilderInterface::class.java)
     }
 
     override suspend fun getRepository(searchWord: String): RepositoryList {

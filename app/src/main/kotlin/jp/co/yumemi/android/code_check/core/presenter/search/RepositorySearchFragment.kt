@@ -1,22 +1,24 @@
-/*
- * Copyright © 2021 YUMEMI Inc. All rights reserved.
- */
-package jp.co.yumemi.android.code_check
+package jp.co.yumemi.android.code_check.core.presenter.search
 
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
+import jp.co.yumemi.android.code_check.R
+import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBinding
 
+@AndroidEntryPoint
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private var _binding: FragmentRepositorySearchBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
-    private lateinit var viewModel: RepositorySearchViewModel
+    private val viewModel: RepositorySearchViewModel by viewModels()
 
     private val adapter by lazy {
         RepositoryListRecyclerViewAdapter(
@@ -34,7 +36,6 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
 
         observeViewModel()
         setupRecyclerView()
@@ -46,13 +47,19 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
             adapter.submitList(it)
         }
         viewModel.errorMessage.observe(viewLifecycleOwner) {
-            it?.let { DialogHelper.showErrorDialog(requireContext(), it) }
+            it?.let {
+                DialogHelper.showErrorDialog(
+                    requireContext(),
+                    requireContext().getString(it),
+                )
+            }
         }
     }
 
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(requireContext())
-        val dividerItemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
+        val dividerItemDecoration =
+            DividerItemDecoration(requireContext(), layoutManager.orientation)
 
         binding.recyclerView.apply {
             this.layoutManager = layoutManager
