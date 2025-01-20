@@ -61,12 +61,12 @@ class RepositorySearchViewModel
             }
         }
 
-    /**
-     * エラーが発生した時に、Viewに問題を表示するためのもの
-     * @param GitHubError エラー情報
-     * @param context コンテキスト
-     */
-    private fun handleError(
+        /**
+         * エラーが発生した時に、Viewに問題を表示するためのもの
+         * @param GitHubError エラー情報
+         * @param context コンテキスト
+         */
+        private fun handleError(
             error: GitHubError,
             context: Context,
         ) {
