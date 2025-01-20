@@ -16,8 +16,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class
-RepositoryDetailViewModel@Inject
+class RepositoryDetailViewModel
+    @Inject
     constructor(
         private val networkRepository: GitHubServiceUsecase,
     ) : ViewModel() {
