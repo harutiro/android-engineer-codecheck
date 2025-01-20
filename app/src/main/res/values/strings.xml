@@ -12,4 +12,6 @@
     <string name="rate_limit_error">セッションの時間切れ</string>
     <string name="api_error">APIのエラー</string>
     <string name="form_is_empty">フォームが空欄になっています</string>
+    <string name="detail">詳細</string>
+    <string name="search">検索</string>
 </resources>

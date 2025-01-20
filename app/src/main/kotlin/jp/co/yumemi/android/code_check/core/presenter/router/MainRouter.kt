@@ -3,11 +3,13 @@ package jp.co.yumemi.android.code_check.core.presenter.router
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.presenter.detail.RepositoryDetailScreen
 import jp.co.yumemi.android.code_check.core.presenter.search.RepositorySearchScreen
 
@@ -15,9 +17,13 @@ import jp.co.yumemi.android.code_check.core.presenter.search.RepositorySearchScr
 fun MainRouter(
     toDetailScreen: (Int) -> Unit,
     toBackScreen: () -> Unit,
+    changeTopBarTitle: (String) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+
+    val context = LocalContext.current
+
     NavHost(
         navController = navController,
         startDestination = BottomNavigationBarRoute.SEARCH.route,
@@ -27,6 +33,7 @@ fun MainRouter(
             RepositorySearchScreen(
                 toDetailScreen = toDetailScreen,
             )
+            changeTopBarTitle(context.getString(R.string.app_name))
         }
         composable(
             BottomNavigationBarRoute.DETAIL.route + "/{id}",
@@ -37,11 +44,12 @@ fun MainRouter(
                 toBack = toBackScreen,
                 repositoryId = id ?: 0,
             )
+            changeTopBarTitle(context.getString(R.string.detail))
         }
     }
 }
 
-enum class BottomNavigationBarRoute(val route: String, val title: String) {
-    SEARCH("search", "検索"),
-    DETAIL("detail", "詳細"),
+enum class BottomNavigationBarRoute(val route: String, val title: Int) {
+    SEARCH("search", R.string.search),
+    DETAIL("detail", R.string.detail),
 }
