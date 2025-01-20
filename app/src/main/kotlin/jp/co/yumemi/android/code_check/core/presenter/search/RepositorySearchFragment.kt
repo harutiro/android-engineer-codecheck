@@ -50,7 +50,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
             it?.let {
                 DialogHelper.showErrorDialog(
                     requireContext(),
-                    requireContext().getString(it)
+                    requireContext().getString(it),
                 )
             }
         }
