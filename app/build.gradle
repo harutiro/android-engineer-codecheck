@@ -6,6 +6,7 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
     id 'com.google.dagger.hilt.android'
+    id 'jacoco'
 }
 
 android {
@@ -66,6 +67,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     implementation "com.google.dagger:hilt-android:2.55"
     kapt "com.google.dagger:hilt-compiler:2.55"
+    testImplementation "org.mockito:mockito-core:5.2.0"
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
+
 
     // Retrofit
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
@@ -76,4 +80,35 @@ dependencies {
 
 kapt {
     correctErrorTypes true
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+//tasks.withType(Test) {
+//    useJUnitPlatform()
+//    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+//}
+
+tasks.register("jacocoTestReport", JacocoReport) {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*']
+    def debugTree = fileTree(dir: "$buildDir/intermediates/javac/debug", excludes: fileFilter)
+    def mainSrc = "$projectDir/src/main/java"
+
+    sourceDirectories.setFrom(files([
+        mainSrc,
+        "$projectDir/src/main/kotlin"
+    ]))
+    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ]))
 }
