@@ -172,6 +172,8 @@ fun RepositoryOverviewCard(repository: RepositoryEntity) {
 
 @Composable
 fun RepositoryStatsCard(repository: RepositoryEntity) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -188,7 +190,11 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Stars: ${repository.stargazersCount}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    text = context.getString(R.string.stars_count_format, repository.stargazersCount),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -199,7 +205,11 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Forks: ${repository.forksCount}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    text = context.getString(R.string.forks_count_format, repository.forksCount),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -210,7 +220,11 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Open Issues: ${repository.openIssuesCount}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    text = context.getString(R.string.issues_count_format, repository.openIssuesCount),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                )
             }
         }
     }
