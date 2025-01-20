@@ -4,19 +4,22 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBinding
 
+@AndroidEntryPoint
 class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private var _binding: FragmentRepositorySearchBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
-    private lateinit var viewModel: RepositorySearchViewModel
+    private val viewModel: RepositorySearchViewModel by viewModels()
 
     private val adapter by lazy {
         RepositoryListRecyclerViewAdapter(
@@ -34,7 +37,8 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRepositorySearchBinding.bind(view)
-        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
+//        viewModel = ViewModelProvider(this)[RepositorySearchViewModel::class.java]
+
 
         observeViewModel()
         setupRecyclerView()
@@ -65,7 +69,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun setupSearchInput() {
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.searchRepositories(editText.text.toString().trim())
+                viewModel.searchRepositories(editText.text.toString().trim(),requireContext())
                 true
             } else {
                 false

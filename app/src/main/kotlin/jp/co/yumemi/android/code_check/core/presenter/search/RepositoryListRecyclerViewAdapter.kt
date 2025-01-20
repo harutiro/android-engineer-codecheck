@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 
-
 /**
  * DiffUtilの実装
  */
