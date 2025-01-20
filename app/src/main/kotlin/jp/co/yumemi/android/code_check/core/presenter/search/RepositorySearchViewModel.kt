@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
 import jp.co.yumemi.android.code_check.features.github.usecase.GitHubServiceUsecaseImpl
+import jp.co.yumemi.android.code_check.features.github.utils.GitHubError
 import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,7 +47,7 @@ class RepositorySearchViewModel
                 try {
                     val results = networkRepository.fetchSearchResults(query, context)
                     if (results is NetworkResult.Error) {
-                        _errorMessage.postValue(results.exception.message)
+                        handleError(results.exception, context)
                         return@launch
                     }
                     if (results is NetworkResult.Success) {
@@ -53,8 +55,23 @@ class RepositorySearchViewModel
                     }
                 } catch (e: NetworkException) {
                     Log.e("NetworkException", e.message, e)
-                    _errorMessage.postValue(e.message)
+                    handleError(GitHubError.NetworkError(e), context)
                 }
             }
+        }
+
+        private fun handleError(
+            error: GitHubError,
+            context: Context,
+        ) {
+            val messageRes =
+                when (error) {
+                    is GitHubError.NetworkError -> R.string.network_error
+                    is GitHubError.ApiError -> R.string.api_error
+                    is GitHubError.ParseError -> R.string.parse_error
+                    is GitHubError.RateLimitError -> R.string.rate_limit_error
+                    is GitHubError.AuthenticationError -> R.string.auth_error
+                }
+            _errorMessage.value = context.getString(messageRes)
         }
     }

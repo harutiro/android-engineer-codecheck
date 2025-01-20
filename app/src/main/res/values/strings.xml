@@ -6,4 +6,9 @@
     <string name="watchers_count">"%1$d watchers"</string>
     <string name="forks_count">"%1$d forks"</string>
     <string name="open_issues_count">"%1$d open issues"</string>
+    <string name="auth_error">認証エラー</string>
+    <string name="network_error">ネットワークエラー</string>
+    <string name="parse_error">パースエラー</string>
+    <string name="rate_limit_error">セッションの時間切れ</string>
+    <string name="api_error">APIのエラー</string>
 </resources>

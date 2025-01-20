@@ -2,8 +2,11 @@ package jp.co.yumemi.android.code_check.features.github.reposiotory
 
 import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
 import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApi
+import jp.co.yumemi.android.code_check.features.github.utils.GitHubError
 import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 import org.json.JSONException
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class GitHubServiceRepositoryImpl
@@ -27,10 +30,18 @@ class GitHubServiceRepositoryImpl
                         )
                     }
                 NetworkResult.Success(items)
+            } catch (e: HttpException) {
+                val error =
+                    when (e.code()) {
+                        429 -> GitHubError.RateLimitError
+                        401 -> GitHubError.AuthenticationError
+                        else -> GitHubError.ApiError(e.code(), e.message())
+                    }
+                NetworkResult.Error(error)
             } catch (e: JSONException) {
-                NetworkResult.Error(NetworkException("JSONパースエラー", e))
-            } catch (e: Exception) {
-                NetworkResult.Error(NetworkException("ネットワークエラー", e))
+                NetworkResult.Error(GitHubError.ParseError(e))
+            } catch (e: IOException) {
+                NetworkResult.Error(GitHubError.NetworkError(e))
             }
         }
     }
