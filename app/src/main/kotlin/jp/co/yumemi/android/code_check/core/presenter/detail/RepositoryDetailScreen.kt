@@ -62,6 +62,7 @@ fun RepositoryDetailScreen(
     var error by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
+        isLoading = true
         viewModel.searchResults.observe(lifecycleOwner) {
             repositoryDetail.value = it
             isLoading = false
@@ -77,7 +78,7 @@ fun RepositoryDetailScreen(
         viewModel.searchRepositories(repositoryId)
     }
 
-    if (error != null) {
+    if (error != null && !isLoading) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -87,11 +88,13 @@ fun RepositoryDetailScreen(
         }
     }
 
-    RepositoryDetailScaffold(
-        isLoading = isLoading,
-        repositoryDetail = repositoryDetail.value,
-        toBack = toBack,
-    )
+    if (error == null) {
+        RepositoryDetailScaffold(
+            isLoading = isLoading,
+            repositoryDetail = repositoryDetail.value,
+            toBack = toBack,
+        )
+    }
 }
 
 @Composable
