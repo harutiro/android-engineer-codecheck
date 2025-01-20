@@ -1,5 +1,6 @@
 package jp.co.yumemi.android.code_check.core.presenter.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,27 +57,33 @@ fun RepositoryDetailScreen(
     var isLoading by remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    BackHandler(onBack = toBack)
+
+    var error by remember { mutableStateOf<String?>(null) }
+
     LaunchedEffect(Unit) {
         viewModel.searchResults.observe(lifecycleOwner) {
             repositoryDetail.value = it
             isLoading = false
+            error = null
         }
         viewModel.errorMessage.observe(lifecycleOwner) { errorMessage ->
             errorMessage?.let {
                 showSnackBar(context.getString(it), true)
+                error = context.getString(it)
             }
             isLoading = false
         }
         viewModel.searchRepositories(repositoryId)
     }
 
-    if (repositoryDetail.value == null && !isLoading) {
+    if (error != null) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         ) {
-            Text(text = context.getString(R.string.error_data_fetch_failed))
+            Text(text = error!!)
         }
     }
 
@@ -156,7 +163,7 @@ fun RepositoryOverviewCard(repository: RepositoryEntity) {
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "Language: ${repository.language}",
+                text = context.getString(R.string.language_format, repository.language),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }

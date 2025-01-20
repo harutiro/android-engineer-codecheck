@@ -21,4 +21,5 @@
     <string name="search_bar_description">検索バー</string>
     <string name="owner_icon_description">ユーザーアイコン</string>
     <string name="error_data_fetch_failed">データの取得に失敗しました</string>
+    <string name="language_format">Language: %s</string>
 </resources>
