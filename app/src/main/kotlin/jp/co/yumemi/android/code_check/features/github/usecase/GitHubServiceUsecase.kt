@@ -1,8 +1,10 @@
 package jp.co.yumemi.android.code_check.features.github.usecase
 
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 
 interface GitHubServiceUsecase {
-    suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryItem>>
+    suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryEntity>>
+
+    suspend fun fetchRepositoryDetail(id: Int): NetworkResult<RepositoryEntity>
 }

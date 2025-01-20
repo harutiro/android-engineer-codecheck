@@ -7,6 +7,7 @@ data class RepositoryList(
 )
 
 data class RepositoryItem(
+    val id: Int,
     val name: String,
     val owner: RepositoryOwner,
     val language: String?,

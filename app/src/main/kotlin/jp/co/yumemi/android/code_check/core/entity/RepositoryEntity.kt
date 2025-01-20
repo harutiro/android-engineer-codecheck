@@ -4,7 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class RepositoryItem(
+data class RepositoryEntity(
+    val id: Int,
     val name: String,
     val ownerIconUrl: String,
     val language: String,

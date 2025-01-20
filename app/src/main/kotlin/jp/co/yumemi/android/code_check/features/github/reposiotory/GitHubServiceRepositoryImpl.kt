@@ -1,6 +1,6 @@
 package jp.co.yumemi.android.code_check.features.github.reposiotory
 
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApi
 import jp.co.yumemi.android.code_check.features.github.utils.GitHubError
 import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
@@ -14,12 +14,12 @@ class GitHubServiceRepositoryImpl
     constructor(
         private val gitHubRepositoryApi: GitHubServiceApi,
     ) : GitHubServiceRepository {
-        override suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryItem>> {
+        override suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryEntity>> {
             return try {
-                val repositoryList = gitHubRepositoryApi.getRepository(inputText)
+                val repositoryList = gitHubRepositoryApi.getRepositoryList(inputText)
                 val items =
                     repositoryList.items.map { item ->
-                        RepositoryItem(
+                        RepositoryEntity(
                             name = item.name,
                             ownerIconUrl = item.owner.avatarUrl,
                             language = item.language ?: "none",
@@ -27,9 +27,40 @@ class GitHubServiceRepositoryImpl
                             watchersCount = item.watchersCount,
                             forksCount = item.forksCount,
                             openIssuesCount = item.openIssuesCount,
+                            id = item.id,
                         )
                     }
                 NetworkResult.Success(items)
+            } catch (e: HttpException) {
+                val error =
+                    when (e.code()) {
+                        429 -> GitHubError.RateLimitError
+                        401 -> GitHubError.AuthenticationError
+                        else -> GitHubError.ApiError(e.code(), e.message())
+                    }
+                NetworkResult.Error(error)
+            } catch (e: JSONException) {
+                NetworkResult.Error(GitHubError.ParseError(e))
+            } catch (e: IOException) {
+                NetworkResult.Error(GitHubError.NetworkError(e))
+            }
+        }
+
+        override suspend fun fetchRepositoryDetail(id: Int): NetworkResult<RepositoryEntity> {
+            return try {
+                val repositoryDetail = gitHubRepositoryApi.getRepositoryDetail(id)
+                val repositoryEntity =
+                    RepositoryEntity(
+                        name = repositoryDetail.name,
+                        ownerIconUrl = repositoryDetail.owner.avatarUrl,
+                        language = repositoryDetail.language ?: "none",
+                        stargazersCount = repositoryDetail.stargazersCount,
+                        watchersCount = repositoryDetail.watchersCount,
+                        forksCount = repositoryDetail.forksCount,
+                        openIssuesCount = repositoryDetail.openIssuesCount,
+                        id = repositoryDetail.id,
+                    )
+                NetworkResult.Success(repositoryEntity)
             } catch (e: HttpException) {
                 val error =
                     when (e.code()) {

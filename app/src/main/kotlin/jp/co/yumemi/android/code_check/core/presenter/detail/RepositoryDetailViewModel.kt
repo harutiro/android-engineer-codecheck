@@ -1,4 +1,4 @@
-package jp.co.yumemi.android.code_check.core.presenter.search
+package jp.co.yumemi.android.code_check.core.presenter.detail
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -15,11 +15,8 @@ import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * RepositorySearchFragmentで利用するリポジトリ検索用のViewModel
- */
 @HiltViewModel
-class RepositorySearchViewModel
+class RepositoryDetailViewModel
     @Inject
     constructor(
         private val networkRepository: GitHubServiceUsecase,
@@ -27,21 +24,21 @@ class RepositorySearchViewModel
         private val _errorMessage = MutableLiveData<Int?>()
         val errorMessage: LiveData<Int?> get() = _errorMessage
 
-        private val _searchResults = MutableLiveData<List<RepositoryEntity>>()
-        val searchResults: LiveData<List<RepositoryEntity>> get() = _searchResults
+        private val _searchResults = MutableLiveData<RepositoryEntity>()
+        val searchResults: LiveData<RepositoryEntity> get() = _searchResults
 
         /**
          * GitHubのレポジトリ検索を行う
-         * @param query 検索キーワード
+         * @param id 検索キーワード
          */
-        fun searchRepositories(query: String) {
-            if (query.isBlank()) {
-                _errorMessage.postValue(R.string.form_is_empty)
+        fun searchRepositories(id: Int) {
+            if (id == 0) {
+                _errorMessage.postValue(R.string.invalid_repository_id)
                 return
             }
             viewModelScope.launch {
                 try {
-                    val results = networkRepository.fetchSearchResults(query)
+                    val results = networkRepository.fetchRepositoryDetail(id)
                     if (results is NetworkResult.Error) {
                         handleError(results.exception)
                         return@launch
@@ -50,7 +47,7 @@ class RepositorySearchViewModel
                         _searchResults.postValue(results.data)
                     }
                 } catch (e: NetworkException) {
-                    Log.e("NetworkException", e.message, e)
+                    Log.e("RepositoryDetailViewModel", "Failed to fetch repository details for id: $id", e)
                     handleError(GitHubError.NetworkError(e))
                 }
             }
