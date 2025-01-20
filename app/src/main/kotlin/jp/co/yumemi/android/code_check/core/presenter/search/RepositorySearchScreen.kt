@@ -47,6 +47,7 @@ import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 fun RepositorySearchScreen(
     toDetailScreen: (Int) -> Unit,
     viewModel: RepositorySearchViewModel = hiltViewModel(),
+    showSnackBar:(String, Boolean) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
     val repositoryList = remember { mutableStateListOf<RepositoryEntity>() }
@@ -62,9 +63,9 @@ fun RepositorySearchScreen(
         }
         viewModel.errorMessage.observe(lifecycleOwner) {
             it?.let {
-                DialogHelper.showErrorDialog(
-                    context,
+                showSnackBar(
                     context.getString(it),
+                    true
                 )
             }
             isLoading = false

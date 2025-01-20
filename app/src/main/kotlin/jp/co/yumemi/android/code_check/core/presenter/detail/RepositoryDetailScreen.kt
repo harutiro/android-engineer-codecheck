@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,7 @@ fun RepositoryDetailScreen(
     toBack: () -> Unit,
     repositoryId: Int,
     viewModel: RepositoryDetailViewModel = hiltViewModel(),
+    showSnackBar: (String, Boolean) -> Unit
 ) {
     val repositoryDetail = remember { mutableStateOf<RepositoryEntity?>(null) }
     val context = LocalContext.current
@@ -61,11 +63,22 @@ fun RepositoryDetailScreen(
         }
         viewModel.errorMessage.observe(lifecycleOwner) { errorMessage ->
             errorMessage?.let {
-                DialogHelper.showErrorDialog(context, context.getString(it))
+                showSnackBar(context.getString(it), true)
             }
             isLoading = false
         }
         viewModel.searchRepositories(repositoryId)
+    }
+
+    if(repositoryDetail.value == null && !isLoading){
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+        ){
+            Text(text = "データの取得に失敗しました。")
+
+        }
     }
 
     RepositoryDetailScaffold(

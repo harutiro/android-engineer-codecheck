@@ -18,6 +18,7 @@ fun MainRouter(
     toDetailScreen: (Int) -> Unit,
     toBackScreen: () -> Unit,
     changeTopBarTitle: (String) -> Unit,
+    showSnackbar: (String, Boolean) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
@@ -32,6 +33,7 @@ fun MainRouter(
         composable(BottomNavigationBarRoute.SEARCH.route) {
             RepositorySearchScreen(
                 toDetailScreen = toDetailScreen,
+                showSnackBar = showSnackbar
             )
             changeTopBarTitle(context.getString(R.string.app_name))
         }
@@ -43,6 +45,7 @@ fun MainRouter(
             RepositoryDetailScreen(
                 toBack = toBackScreen,
                 repositoryId = id ?: 0,
+                showSnackBar = showSnackbar
             )
             changeTopBarTitle(context.getString(R.string.detail))
         }

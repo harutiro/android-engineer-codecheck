@@ -9,6 +9,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -16,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +30,7 @@ import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.presenter.router.BottomNavigationBarRoute
 import jp.co.yumemi.android.code_check.core.presenter.router.MainRouter
 import jp.co.yumemi.android.code_check.core.presenter.widget.EmptyCompose
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +43,10 @@ fun MainScreen() {
     var topBarTitle by remember {
         mutableStateOf(appName)
     }
+
+    val hostState = remember { SnackbarHostState() }
+    var isErrorMessage by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     val navigationIcon: @Composable () -> Unit =
         if (navBackStackEntry?.destination?.route != BottomNavigationBarRoute.SEARCH.route) {
@@ -75,6 +84,7 @@ fun MainScreen() {
 
             )
         },
+        snackbarHost = {CustomSnackbarHost(hostState = hostState, isErrorMessage = isErrorMessage)}
     ) { innerPadding ->
         MainRouter(
             toDetailScreen = { id ->
@@ -86,10 +96,32 @@ fun MainScreen() {
             changeTopBarTitle = {
                 topBarTitle = it
             },
+            showSnackbar = { message, isError ->
+                scope.launch {
+                    isErrorMessage = isError
+                    hostState.showSnackbar(message)
+                }
+            },
             navController = navController,
             modifier =
                 Modifier
                     .padding(innerPadding),
+        )
+    }
+}
+
+@Composable
+fun CustomSnackbarHost(
+    hostState: SnackbarHostState,
+    isErrorMessage: Boolean
+) {
+    SnackbarHost(
+        hostState = hostState
+    ) { snackbarData ->
+        Snackbar(
+            snackbarData = snackbarData,
+            containerColor = if (isErrorMessage) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer,
+            contentColor = if (isErrorMessage) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }
