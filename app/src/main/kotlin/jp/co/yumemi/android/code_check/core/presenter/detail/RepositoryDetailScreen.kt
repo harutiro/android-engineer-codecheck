@@ -86,7 +86,6 @@ fun RepositoryDetailScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepositoryDetailScaffold(
     isLoading: Boolean,
