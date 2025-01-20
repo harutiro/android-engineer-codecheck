@@ -12,36 +12,38 @@ import org.mockito.Mockito.`when`
 import java.io.IOException
 
 object GitHubMockData {
-
     // 正常なリポジトリ検索結果
     fun getMockRepositoryList(): RepositoryList {
         return RepositoryList(
-            items = listOf(
-                RepositoryItem(
-                    name = "repo1",
-                    owner = RepositoryOwner(
-                        avatarUrl = "url1"
+            items =
+                listOf(
+                    RepositoryItem(
+                        name = "repo1",
+                        owner =
+                            RepositoryOwner(
+                                avatarUrl = "url1",
+                            ),
+                        language = "Kotlin",
+                        stargazersCount = 100,
+                        forksCount = 50,
+                        openIssuesCount = 30,
+                        watchersCount = 70,
+                        id = 1,
                     ),
-                    language = "Kotlin",
-                    stargazersCount = 100,
-                    forksCount = 50,
-                    openIssuesCount = 30,
-                    watchersCount = 70,
-                    id = 1
+                    RepositoryItem(
+                        name = "repo2",
+                        owner =
+                            RepositoryOwner(
+                                avatarUrl = "url2",
+                            ),
+                        language = "Java",
+                        stargazersCount = 200,
+                        forksCount = 80,
+                        openIssuesCount = 20,
+                        watchersCount = 60,
+                        id = 2,
+                    ),
                 ),
-                RepositoryItem(
-                    name = "repo2",
-                    owner = RepositoryOwner(
-                        avatarUrl = "url2"
-                    ),
-                    language = "Java",
-                    stargazersCount = 200,
-                    forksCount = 80,
-                    openIssuesCount = 20,
-                    watchersCount = 60,
-                    id = 2
-                )
-            )
         )
     }
 
@@ -55,7 +57,7 @@ object GitHubMockData {
                 forksCount = 50,
                 openIssuesCount = 30,
                 watchersCount = 70,
-                id = 1
+                id = 1,
             ),
             RepositoryEntity(
                 name = "repo2",
@@ -65,8 +67,8 @@ object GitHubMockData {
                 forksCount = 80,
                 openIssuesCount = 20,
                 watchersCount = 60,
-                id = 2
-            )
+                id = 2,
+            ),
         )
     }
 
@@ -80,9 +82,10 @@ object GitHubMockData {
             openIssuesCount = 30,
             watchersCount = 70,
             id = 1,
-            owner = RepositoryOwner(
-                avatarUrl = "url1"
-            )
+            owner =
+                RepositoryOwner(
+                    avatarUrl = "url1",
+                ),
         )
     }
 
@@ -95,11 +98,9 @@ object GitHubMockData {
             forksCount = 50,
             openIssuesCount = 30,
             watchersCount = 70,
-            id = 1
+            id = 1,
         )
     }
-
-
 
     // ネットワークエラー
     fun getMockNetworkError(): NetworkResult.Error {
