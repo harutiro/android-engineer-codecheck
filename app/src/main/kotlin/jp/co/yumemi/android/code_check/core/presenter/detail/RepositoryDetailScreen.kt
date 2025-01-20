@@ -76,7 +76,7 @@ fun RepositoryDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         ) {
-            Text(text = "データの取得に失敗しました。")
+            Text(text = context.getString(R.string.error_data_fetch_failed))
         }
     }
 
