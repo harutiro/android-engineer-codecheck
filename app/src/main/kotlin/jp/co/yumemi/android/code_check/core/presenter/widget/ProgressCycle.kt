@@ -20,29 +20,30 @@ import jp.co.yumemi.android.code_check.R
 @Composable
 fun ProgressCycle(
     message: String = stringResource(R.string.searching),
-    contentDescription: String = stringResource(R.string.loading_content_description)
+    contentDescription: String = stringResource(R.string.loading_content_description),
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(8.dp)
-            .semantics {
-                isTraversalGroup = true
-                this.contentDescription = contentDescription
-            }
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(8.dp)
+                .semantics {
+                    isTraversalGroup = true
+                    this.contentDescription = contentDescription
+                },
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.semantics {
-                this.contentDescription = contentDescription
-            }
+            modifier =
+                Modifier.semantics {
+                    this.contentDescription = contentDescription
+                },
         )
         Text(
             text = message,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
         )
     }
 }

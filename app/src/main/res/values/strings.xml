@@ -19,4 +19,5 @@
     <string name="loading_content_description">データを読み込んでいます</string>
     <string name="search_icon_description">検索アイコン</string>
     <string name="search_bar_description">検索バー</string>
+    <string name="owner_icon_description">ユーザーアイコン</string>
 </resources>

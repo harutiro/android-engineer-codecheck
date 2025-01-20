@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.rememberAsyncImagePainter
+import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.core.presenter.widget.ProgressCycle
 
@@ -124,6 +126,8 @@ fun RepositoryDetailContent(repository: RepositoryEntity) {
 
 @Composable
 fun RepositoryOverviewCard(repository: RepositoryEntity) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -137,8 +141,13 @@ fun RepositoryOverviewCard(repository: RepositoryEntity) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                painter = rememberAsyncImagePainter(repository.ownerIconUrl),
-                contentDescription = "Owner Icon",
+                painter =
+                    rememberAsyncImagePainter(
+                        model = repository.ownerIconUrl,
+                        error = painterResource(R.drawable.ic_launcher_foreground),
+                        placeholder = painterResource(R.drawable.ic_launcher_background),
+                    ),
+                contentDescription = context.getString(R.string.owner_icon_description),
                 modifier = Modifier.size(80.dp),
             )
             Text(
