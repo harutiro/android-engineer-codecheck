@@ -1,6 +1,5 @@
 package jp.co.yumemi.android.code_check.core.presenter.search
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,12 +33,8 @@ class RepositorySearchViewModel
         /**
          * GitHubのレポジトリ検索を行う
          * @param query 検索キーワード
-         * @param context コンテキスト
          */
-        fun searchRepositories(
-            query: String,
-            context: Context,
-        ) {
+        fun searchRepositories(query: String) {
             if (query.isBlank()) {
                 _errorMessage.postValue(R.string.form_is_empty)
                 return
@@ -63,8 +58,7 @@ class RepositorySearchViewModel
 
         /**
          * エラーが発生した時に、Viewに問題を表示するためのもの
-         * @param GitHubError エラー情報
-         * @param context コンテキスト
+         * @param error エラー情報
          */
         private fun handleError(error: GitHubError) {
             _errorMessage.value =
