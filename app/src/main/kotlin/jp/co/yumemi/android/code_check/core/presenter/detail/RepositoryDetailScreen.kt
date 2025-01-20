@@ -194,7 +194,7 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = context.getString(R.string.stars_count_format, repository.stargazersCount),
+                    text = context.getString(R.string.stars_count, repository.stargazersCount),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                 )
@@ -209,7 +209,7 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = context.getString(R.string.forks_count_format, repository.forksCount),
+                    text = context.getString(R.string.forks_count, repository.forksCount),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                 )
@@ -224,7 +224,7 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = context.getString(R.string.issues_count_format, repository.openIssuesCount),
+                    text = context.getString(R.string.open_issues_count, repository.openIssuesCount),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                 )
