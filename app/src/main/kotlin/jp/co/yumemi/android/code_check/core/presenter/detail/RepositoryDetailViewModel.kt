@@ -33,7 +33,7 @@ class RepositoryDetailViewModel
          */
         fun searchRepositories(id: Int) {
             if (id == 0) {
-                _errorMessage.postValue(R.string.api_error)
+                _errorMessage.postValue(R.string.invalid_repository_id)
                 return
             }
             viewModelScope.launch {
@@ -47,7 +47,7 @@ class RepositoryDetailViewModel
                         _searchResults.postValue(results.data)
                     }
                 } catch (e: NetworkException) {
-                    Log.e("NetworkException", e.message, e)
+                    Log.e("RepositoryDetailViewModel", "Failed to fetch repository details for id: $id", e)
                     handleError(GitHubError.NetworkError(e))
                 }
             }
