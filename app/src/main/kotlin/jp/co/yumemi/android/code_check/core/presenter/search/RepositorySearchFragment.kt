@@ -71,7 +71,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private fun setupSearchInput() {
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.searchRepositories(editText.text.toString().trim(), requireContext())
+                viewModel.searchRepositories(editText.text.toString().trim())
                 true
             } else {
                 false
