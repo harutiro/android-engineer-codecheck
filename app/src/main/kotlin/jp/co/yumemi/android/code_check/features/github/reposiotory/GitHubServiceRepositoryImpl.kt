@@ -1,6 +1,6 @@
 package jp.co.yumemi.android.code_check.features.github.reposiotory
 
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.features.github.api.GitHubServiceApi
 import jp.co.yumemi.android.code_check.features.github.utils.GitHubError
 import jp.co.yumemi.android.code_check.features.github.utils.NetworkResult
@@ -14,12 +14,12 @@ class GitHubServiceRepositoryImpl
     constructor(
         private val gitHubRepositoryApi: GitHubServiceApi,
     ) : GitHubServiceRepository {
-        override suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryItem>> {
+        override suspend fun fetchSearchResults(inputText: String): NetworkResult<List<RepositoryEntity>> {
             return try {
                 val repositoryList = gitHubRepositoryApi.getRepository(inputText)
                 val items =
                     repositoryList.items.map { item ->
-                        RepositoryItem(
+                        RepositoryEntity(
                             name = item.name,
                             ownerIconUrl = item.owner.avatarUrl,
                             language = item.language ?: "none",
@@ -27,6 +27,7 @@ class GitHubServiceRepositoryImpl
                             watchersCount = item.watchersCount,
                             forksCount = item.forksCount,
                             openIssuesCount = item.openIssuesCount,
+                            id = item.id,
                         )
                     }
                 NetworkResult.Success(items)

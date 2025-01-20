@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.yumemi.android.code_check.R
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositorySearchBinding
 
@@ -23,8 +23,8 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
     private val adapter by lazy {
         RepositoryListRecyclerViewAdapter(
             object : RepositoryListRecyclerViewAdapter.OnItemClickListener {
-                override fun itemClick(repositoryItem: RepositoryItem) {
-                    onItemClick(repositoryItem)
+                override fun itemClick(repositoryEntity: RepositoryEntity) {
+                    onItemClick(repositoryEntity)
                 }
             },
         )
@@ -83,7 +83,7 @@ class RepositorySearchFragment : Fragment(R.layout.fragment_repository_search) {
      * リポジトリ検索結果のクリックイベント
      * リサイクラービューでアイテムが押された時に動作を行います。
      */
-    private fun onItemClick(item: RepositoryItem) {
+    private fun onItemClick(item: RepositoryEntity) {
         val action =
             RepositorySearchFragmentDirections
                 .actionRepositoriesFragmentToRepositoryFragment(item = item)

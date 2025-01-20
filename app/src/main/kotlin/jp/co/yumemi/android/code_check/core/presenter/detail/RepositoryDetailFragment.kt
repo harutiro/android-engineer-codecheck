@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.yumemi.android.code_check.R
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.databinding.FragmentRepositoryDetailBinding
 
 @AndroidEntryPoint
@@ -32,7 +32,7 @@ class RepositoryDetailFragment : Fragment(R.layout.fragment_repository_detail) {
         bindViews(item)
     }
 
-    private fun bindViews(item: RepositoryItem) {
+    private fun bindViews(item: RepositoryEntity) {
         binding.ownerIconView.load(item.ownerIconUrl)
         binding.nameView.text = item.name
         binding.languageView.text = resources.getString(R.string.written_language, item.language)

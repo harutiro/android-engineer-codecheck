@@ -8,23 +8,23 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.R
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 
 /**
  * DiffUtilの実装
  */
 private val diffUtilCallback =
-    object : DiffUtil.ItemCallback<RepositoryItem>() {
+    object : DiffUtil.ItemCallback<RepositoryEntity>() {
         override fun areItemsTheSame(
-            oldItem: RepositoryItem,
-            newItem: RepositoryItem,
+            oldItem: RepositoryEntity,
+            newItem: RepositoryEntity,
         ): Boolean {
             return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(
-            oldItem: RepositoryItem,
-            newItem: RepositoryItem,
+            oldItem: RepositoryEntity,
+            newItem: RepositoryEntity,
         ): Boolean {
             return oldItem == newItem
         }
@@ -35,7 +35,7 @@ private val diffUtilCallback =
  */
 class RepositoryListRecyclerViewAdapter(
     private val itemClickListener: OnItemClickListener,
-) : ListAdapter<RepositoryItem, RepositoryListRecyclerViewAdapter.ViewHolder>(diffUtilCallback) {
+) : ListAdapter<RepositoryEntity, RepositoryListRecyclerViewAdapter.ViewHolder>(diffUtilCallback) {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val repositoryNameView: TextView? = view.findViewById(R.id.repositoryNameView)
 
@@ -43,7 +43,7 @@ class RepositoryListRecyclerViewAdapter(
          * ビューにデータをバインド
          */
         fun bind(
-            item: RepositoryItem,
+            item: RepositoryEntity,
             clickListener: OnItemClickListener,
         ) {
             repositoryNameView?.text = item.name
@@ -52,7 +52,7 @@ class RepositoryListRecyclerViewAdapter(
     }
 
     interface OnItemClickListener {
-        fun itemClick(repositoryItem: RepositoryItem)
+        fun itemClick(repositoryEntity: RepositoryEntity)
     }
 
     override fun onCreateViewHolder(

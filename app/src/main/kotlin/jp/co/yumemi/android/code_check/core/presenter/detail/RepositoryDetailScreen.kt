@@ -5,7 +5,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun RepositoryDetailScreen(
-    toBack: () -> Unit
-){
-    Text(text = "RepositoryDetailScreen")
+    toBack: () -> Unit,
+    repositoryId: Int,
+) {
+//    Text(text = "RepositoryDetailScreen")
+    Text(text = "repositoryId: $repositoryId")
 }

@@ -42,25 +42,25 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import jp.co.yumemi.android.code_check.R
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.core.presenter.theme.CodeCheckAppTheme
 import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 
 @Composable
 fun RepositorySearchScreen(
-    toDetailScreen: () -> Unit,
-    viewModel: RepositorySearchViewModel = hiltViewModel()
+    toDetailScreen: (Int) -> Unit,
+    viewModel: RepositorySearchViewModel = hiltViewModel(),
 ) {
     var inputText by remember { mutableStateOf("") }
-    val repositoryName = remember { mutableStateListOf<RepositoryItem>() }
+    val repositoryList = remember { mutableStateListOf<RepositoryEntity>() }
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.searchResults.observe(lifecycleOwner) {
-            repositoryName.clear()
-            repositoryName.addAll(it)
+            repositoryList.clear()
+            repositoryList.addAll(it)
             isLoading = false
         }
         viewModel.errorMessage.observe(lifecycleOwner) {
@@ -74,68 +74,67 @@ fun RepositorySearchScreen(
         }
     }
 
-
-
     Column {
         CustomSearchBar(
             inputText = inputText,
             onValueChange = { inputText = it },
             searchAction = { searchWord ->
-                repositoryName.clear()
+                repositoryList.clear()
                 viewModel.searchRepositories(searchWord.trim())
                 isLoading = true
-            }
+            },
         )
-        if(isLoading){
+        if (isLoading) {
             ProgressCycle()
         }
         RepositoryListView(
-            repositoryName = repositoryName,
+            repositoryList = repositoryList,
             onTapping = toDetailScreen,
         )
     }
 }
 
 @Composable
-fun ProgressCycle(){
+fun ProgressCycle() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(8.dp)
-            .semantics { isTraversalGroup = true }
-
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(8.dp)
+                .semantics { isTraversalGroup = true },
     ) {
         CircularProgressIndicator()
         Text(text = "検索中")
     }
-
 }
 
 @Composable
 fun RepositoryListView(
-    repositoryName: List<RepositoryItem>,
-    onTapping: () -> Unit = {}
+    repositoryList: List<RepositoryEntity>,
+    onTapping: (Int) -> Unit = {},
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .semantics { isTraversalGroup = true }
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .semantics { isTraversalGroup = true },
     ) {
-        items(repositoryName.size) { index ->
+        items(repositoryList.size) { index ->
             Column(
-                modifier = Modifier
-                    .clickable { onTapping() }
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                modifier =
+                    Modifier
+                        .clickable { onTapping(repositoryList[index].id) }
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
             ) {
                 Text(
-                    text = repositoryName[index].name,
+                    text = repositoryList[index].name,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
@@ -148,18 +147,19 @@ fun RepositoryListView(
 fun CustomSearchBar(
     inputText: String = "",
     onValueChange: (String) -> Unit = {},
-    searchAction:(String) -> Unit
+    searchAction: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     // キーボードアクションを定義
-    val keyboardActions = KeyboardActions(
-        onSearch = {
-            searchAction(inputText)
-            keyboardController?.hide()
-        }
-    )
+    val keyboardActions =
+        KeyboardActions(
+            onSearch = {
+                searchAction(inputText)
+                keyboardController?.hide()
+            },
+        )
 
     TextField(
         value = inputText,
@@ -169,32 +169,35 @@ fun CustomSearchBar(
             Icon(
                 Icons.Sharp.Search,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(40.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(40.dp),
+                ),
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
             ),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            cursorColor = MaterialTheme.colorScheme.primary,
-            focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search,
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Search,
+            ),
         keyboardActions = keyboardActions,
         maxLines = 1,
-        singleLine = true
+        singleLine = true,
     )
 }
 
@@ -211,18 +214,20 @@ fun CustomSearchBarPreview() {
 fun RepositoryListViewPreview() {
     CodeCheckAppTheme {
         RepositoryListView(
-            repositoryName = listOf(
-                RepositoryItem(
-                    name = "Jetpack Compose",
-                    ownerIconUrl = "",
-                    language = "Jetpack Compose",
-                    stargazersCount = 1,
-                    forksCount = 1,
-                    openIssuesCount = 1,
-                    watchersCount = 1
-                )
-            ),
-            onTapping = {}
+            repositoryList =
+                listOf(
+                    RepositoryEntity(
+                        name = "Jetpack Compose",
+                        ownerIconUrl = "",
+                        language = "Jetpack Compose",
+                        stargazersCount = 1,
+                        forksCount = 1,
+                        openIssuesCount = 1,
+                        watchersCount = 1,
+                        id = 1,
+                    ),
+                ),
+            onTapping = {},
         )
     }
 }

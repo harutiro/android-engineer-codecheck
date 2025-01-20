@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.android.code_check.R
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
 import jp.co.yumemi.android.code_check.features.github.usecase.GitHubServiceUsecase
 import jp.co.yumemi.android.code_check.features.github.utils.GitHubError
@@ -27,8 +27,8 @@ class RepositorySearchViewModel
         private val _errorMessage = MutableLiveData<Int?>()
         val errorMessage: LiveData<Int?> get() = _errorMessage
 
-        private val _searchResults = MutableLiveData<List<RepositoryItem>>()
-        val searchResults: LiveData<List<RepositoryItem>> get() = _searchResults
+        private val _searchResults = MutableLiveData<List<RepositoryEntity>>()
+        val searchResults: LiveData<List<RepositoryEntity>> get() = _searchResults
 
         /**
          * GitHubのレポジトリ検索を行う

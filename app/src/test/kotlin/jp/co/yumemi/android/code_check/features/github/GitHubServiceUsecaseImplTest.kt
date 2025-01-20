@@ -1,7 +1,7 @@
 package jp.co.yumemi.android.code_check.features.github
 
 import jp.co.yumemi.android.code_check.core.api.NetworkConnectivityService
-import jp.co.yumemi.android.code_check.core.entity.RepositoryItem
+import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.features.github.reposiotory.GitHubServiceRepository
 import jp.co.yumemi.android.code_check.features.github.reposiotory.NetworkException
 import jp.co.yumemi.android.code_check.features.github.usecase.GitHubServiceUsecaseImpl
@@ -47,7 +47,7 @@ class GitHubServiceUsecaseImplTest {
         runBlocking {
             val mockResults =
                 listOf(
-                    RepositoryItem(
+                    RepositoryEntity(
                         name = "repo1",
                         ownerIconUrl = "description1",
                         language = "url1",
@@ -56,7 +56,7 @@ class GitHubServiceUsecaseImplTest {
                         openIssuesCount = 30,
                         watchersCount = 70,
                     ),
-                    RepositoryItem(
+                    RepositoryEntity(
                         name = "repo2",
                         ownerIconUrl = "description2",
                         language = "url2",

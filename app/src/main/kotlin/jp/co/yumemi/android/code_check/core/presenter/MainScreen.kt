@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.rememberNavController
 import jp.co.yumemi.android.code_check.R
+import jp.co.yumemi.android.code_check.core.presenter.router.BottomNavigationBarRoute
 import jp.co.yumemi.android.code_check.core.presenter.router.MainRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,26 +36,28 @@ fun MainScreen() {
                 title = {
                     Text(
                         text = topBarTitle,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
             )
         },
     ) { innerPadding ->
         MainRouter(
-            toDetailScreen = {
-//                navController.navigate("${BottomNavigationBarRoute.ROUTE_EDITOR.route}/${id}")
+            toDetailScreen = { id ->
+                navController.navigate("${BottomNavigationBarRoute.DETAIL.route}/$id")
             },
             toBackScreen = {
                 navController.popBackStack()
             },
             navController = navController,
-            modifier = Modifier
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .padding(innerPadding),
         )
     }
 }
