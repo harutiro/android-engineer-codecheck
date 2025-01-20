@@ -14,4 +14,6 @@
     <string name="form_is_empty">フォームが空欄になっています</string>
     <string name="detail">詳細</string>
     <string name="search">検索</string>
+    <string name="searching">検索中</string>
+    <string name="loading_content_description">データを読み込んでいます</string>
 </resources>
