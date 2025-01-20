@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -148,7 +149,7 @@ fun CustomSearchBar(
         leadingIcon = {
             Icon(
                 Icons.Sharp.Search,
-                contentDescription = null,
+                contentDescription = context.getString(R.string.search_icon_description),
                 tint = MaterialTheme.colorScheme.primary,
             )
         },
@@ -159,7 +160,10 @@ fun CustomSearchBar(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(40.dp),
-                ),
+                )
+                .semantics {
+                    contentDescription = context.getString(R.string.search_bar_description)
+                },
         colors =
             TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,

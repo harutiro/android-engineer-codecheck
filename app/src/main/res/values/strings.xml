@@ -17,4 +17,6 @@
     <string name="search">検索</string>
     <string name="searching">検索中</string>
     <string name="loading_content_description">データを読み込んでいます</string>
+    <string name="search_icon_description">検索アイコン</string>
+    <string name="search_bar_description">検索バー</string>
 </resources>
