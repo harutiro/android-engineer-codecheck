@@ -16,7 +16,6 @@ class GitHubServiceUsecaseImpl
     ) : GitHubServiceUsecase {
         override suspend fun fetchSearchResults(
             inputText: String,
-            context: Context,
         ): NetworkResult<List<RepositoryItem>> {
             if (!networkConnectivityService.isNetworkAvailable()) {
                 throw NetworkException("オフライン状態です")

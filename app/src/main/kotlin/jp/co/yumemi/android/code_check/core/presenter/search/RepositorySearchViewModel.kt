@@ -34,6 +34,7 @@ class RepositorySearchViewModel
         /**
          * GitHubのレポジトリ検索を行う
          * @param query 検索キーワード
+         * @param context コンテキスト
          */
         fun searchRepositories(
             query: String,
@@ -45,7 +46,7 @@ class RepositorySearchViewModel
             }
             viewModelScope.launch {
                 try {
-                    val results = networkRepository.fetchSearchResults(query, context)
+                    val results = networkRepository.fetchSearchResults(query)
                     if (results is NetworkResult.Error) {
                         handleError(results.exception, context)
                         return@launch
@@ -60,7 +61,12 @@ class RepositorySearchViewModel
             }
         }
 
-        private fun handleError(
+    /**
+     * エラーが発生した時に、Viewに問題を表示するためのもの
+     * @param GitHubError エラー情報
+     * @param context コンテキスト
+     */
+    private fun handleError(
             error: GitHubError,
             context: Context,
         ) {
