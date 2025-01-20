@@ -41,13 +41,12 @@ import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.core.presenter.theme.CodeCheckAppTheme
 import jp.co.yumemi.android.code_check.core.presenter.widget.ProgressCycle
-import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 
 @Composable
 fun RepositorySearchScreen(
     toDetailScreen: (Int) -> Unit,
     viewModel: RepositorySearchViewModel = hiltViewModel(),
-    showSnackBar:(String, Boolean) -> Unit
+    showSnackBar: (String, Boolean) -> Unit,
 ) {
     var inputText by remember { mutableStateOf("") }
     val repositoryList = remember { mutableStateListOf<RepositoryEntity>() }
@@ -65,7 +64,7 @@ fun RepositorySearchScreen(
             it?.let {
                 showSnackBar(
                     context.getString(it),
-                    true
+                    true,
                 )
             }
             isLoading = false

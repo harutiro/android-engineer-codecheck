@@ -56,7 +56,7 @@ fun MainScreen() {
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = "Back",
                     )
                 }
             }
@@ -80,11 +80,10 @@ fun MainScreen() {
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
-                navigationIcon = navigationIcon
-
+                navigationIcon = navigationIcon,
             )
         },
-        snackbarHost = {CustomSnackbarHost(hostState = hostState, isErrorMessage = isErrorMessage)}
+        snackbarHost = { CustomSnackbarHost(hostState = hostState, isErrorMessage = isErrorMessage) },
     ) { innerPadding ->
         MainRouter(
             toDetailScreen = { id ->
@@ -113,15 +112,15 @@ fun MainScreen() {
 @Composable
 fun CustomSnackbarHost(
     hostState: SnackbarHostState,
-    isErrorMessage: Boolean
+    isErrorMessage: Boolean,
 ) {
     SnackbarHost(
-        hostState = hostState
+        hostState = hostState,
     ) { snackbarData ->
         Snackbar(
             snackbarData = snackbarData,
             containerColor = if (isErrorMessage) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primaryContainer,
-            contentColor = if (isErrorMessage) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer
+            contentColor = if (isErrorMessage) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer,
         )
     }
 }

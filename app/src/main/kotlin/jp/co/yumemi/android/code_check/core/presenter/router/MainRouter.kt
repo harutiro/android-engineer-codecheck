@@ -22,7 +22,6 @@ fun MainRouter(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-
     val context = LocalContext.current
 
     NavHost(
@@ -33,7 +32,7 @@ fun MainRouter(
         composable(BottomNavigationBarRoute.SEARCH.route) {
             RepositorySearchScreen(
                 toDetailScreen = toDetailScreen,
-                showSnackBar = showSnackbar
+                showSnackBar = showSnackbar,
             )
             changeTopBarTitle(context.getString(R.string.app_name))
         }
@@ -45,7 +44,7 @@ fun MainRouter(
             RepositoryDetailScreen(
                 toBack = toBackScreen,
                 repositoryId = id ?: 0,
-                showSnackBar = showSnackbar
+                showSnackBar = showSnackbar,
             )
             changeTopBarTitle(context.getString(R.string.detail))
         }

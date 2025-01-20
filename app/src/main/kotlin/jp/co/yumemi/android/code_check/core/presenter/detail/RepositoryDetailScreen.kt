@@ -42,14 +42,13 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.rememberAsyncImagePainter
 import jp.co.yumemi.android.code_check.core.entity.RepositoryEntity
 import jp.co.yumemi.android.code_check.core.presenter.widget.ProgressCycle
-import jp.co.yumemi.android.code_check.core.utils.DialogHelper
 
 @Composable
 fun RepositoryDetailScreen(
     toBack: () -> Unit,
     repositoryId: Int,
     viewModel: RepositoryDetailViewModel = hiltViewModel(),
-    showSnackBar: (String, Boolean) -> Unit
+    showSnackBar: (String, Boolean) -> Unit,
 ) {
     val repositoryDetail = remember { mutableStateOf<RepositoryEntity?>(null) }
     val context = LocalContext.current
@@ -70,21 +69,20 @@ fun RepositoryDetailScreen(
         viewModel.searchRepositories(repositoryId)
     }
 
-    if(repositoryDetail.value == null && !isLoading){
+    if (repositoryDetail.value == null && !isLoading) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-        ){
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+        ) {
             Text(text = "データの取得に失敗しました。")
-
         }
     }
 
     RepositoryDetailScaffold(
         isLoading = isLoading,
         repositoryDetail = repositoryDetail.value,
-        toBack = toBack
+        toBack = toBack,
     )
 }
 
@@ -93,12 +91,13 @@ fun RepositoryDetailScreen(
 fun RepositoryDetailScaffold(
     isLoading: Boolean,
     repositoryDetail: RepositoryEntity?,
-    toBack: () -> Unit
+    toBack: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(8.dp),
     ) {
         if (isLoading) {
             ProgressCycle()
@@ -113,11 +112,12 @@ fun RepositoryDetailScaffold(
 @Composable
 fun RepositoryDetailContent(repository: RepositoryEntity) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         RepositoryOverviewCard(repository = repository)
         RepositoryStatsCard(repository = repository)
@@ -128,28 +128,29 @@ fun RepositoryDetailContent(repository: RepositoryEntity) {
 fun RepositoryOverviewCard(repository: RepositoryEntity) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = rememberAsyncImagePainter(repository.ownerIconUrl),
                 contentDescription = "Owner Icon",
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(80.dp),
             )
             Text(
                 text = repository.name,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Text(
                 text = "Language: ${repository.language}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -159,18 +160,18 @@ fun RepositoryOverviewCard(repository: RepositoryEntity) {
 fun RepositoryStatsCard(repository: RepositoryEntity) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.Star, // 適切なアイコンを選択
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Stars",
                     modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Stars: ${repository.stargazersCount}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -178,10 +179,10 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.Share, // 適切なアイコンを選択
+                    imageVector = Icons.Default.Share,
                     contentDescription = "Forks",
                     modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Forks: ${repository.forksCount}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -189,10 +190,10 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.Report, // 適切なアイコンを選択
+                    imageVector = Icons.Default.Report,
                     contentDescription = "Open Issues",
                     modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Open Issues: ${repository.openIssuesCount}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -205,16 +206,17 @@ fun RepositoryStatsCard(repository: RepositoryEntity) {
 @Composable
 fun PreviewRepositoryOverviewCard() {
     RepositoryOverviewCard(
-        repository = RepositoryEntity(
-            id = 1,
-            name = "Example Repo",
-            ownerIconUrl = "https://via.placeholder.com/150",
-            language = "Kotlin",
-            stargazersCount = 123,
-            forksCount = 45,
-            openIssuesCount = 2,
-            watchersCount = 1
-        )
+        repository =
+            RepositoryEntity(
+                id = 1,
+                name = "Example Repo",
+                ownerIconUrl = "https://via.placeholder.com/150",
+                language = "Kotlin",
+                stargazersCount = 123,
+                forksCount = 45,
+                openIssuesCount = 2,
+                watchersCount = 1,
+            ),
     )
 }
 
@@ -222,15 +224,16 @@ fun PreviewRepositoryOverviewCard() {
 @Composable
 fun PreviewRepositoryStatsCard() {
     RepositoryStatsCard(
-        repository = RepositoryEntity(
-            id = 1,
-            name = "Example Repo",
-            ownerIconUrl = "https://via.placeholder.com/150",
-            language = "Kotlin",
-            stargazersCount = 123,
-            forksCount = 45,
-            openIssuesCount = 2,
-            watchersCount = 1
-        )
+        repository =
+            RepositoryEntity(
+                id = 1,
+                name = "Example Repo",
+                ownerIconUrl = "https://via.placeholder.com/150",
+                language = "Kotlin",
+                stargazersCount = 123,
+                forksCount = 45,
+                openIssuesCount = 2,
+                watchersCount = 1,
+            ),
     )
 }
