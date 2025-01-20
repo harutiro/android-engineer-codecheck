@@ -22,4 +22,9 @@
     <string name="owner_icon_description">ユーザーアイコン</string>
     <string name="error_data_fetch_failed">データの取得に失敗しました</string>
     <string name="language_format">Language: %s</string>
+    <string name="retry">再度行う</string>
+    <string name="error_icon_description">エラーアイコン</string>
+    <string name="empty_state_icon_description">検索アイコン</string>
+    <string name="empty_state_title">リポジトリが見つかりません</string>
+    <string name="empty_state_description">検索ワードを入力してリポジトリを探してください</string>
 </resources>
