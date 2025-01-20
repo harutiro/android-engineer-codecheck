@@ -45,7 +45,7 @@
 
 ```bash
 # 全件実行をする方法
-./gradlew test
+./gradlew test jacocoTestReport
 
 # 単体で動かす方法
 ./gradlew :app:testDebugUnitTest --tests "jp.co.yumemi.android.code_check.features.github.GitHubServiceRepositoryImplTest"
