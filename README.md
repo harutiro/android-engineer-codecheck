@@ -8,7 +8,7 @@
 
 本アプリは GitHub のリポジトリを検索するアプリです。
 
-<img src="docs/app.gif" width="320">
+<img src="docs/new_ui_app.gif" width="320">
 
 ## ディレクトリ構成
 ```bash
